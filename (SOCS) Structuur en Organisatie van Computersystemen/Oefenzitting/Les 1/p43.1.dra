@@ -6,6 +6,6 @@ vgl:	VGL.w r0,0
 	LEZ
 	SPR vgl
 einde:	HIA R0,R1
-	DRU
+    DRU
 
 	STP
