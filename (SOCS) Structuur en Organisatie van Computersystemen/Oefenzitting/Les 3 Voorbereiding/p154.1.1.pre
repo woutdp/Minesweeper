@@ -1,0 +1,21 @@
+        HIA.w R1, 0 | x
+        HIA.w R2, 0 | y
+        HIA.w R3, 0 | s
+
+        LEZ
+        HIA R1, R0
+        LEZ
+        HIA R2, R0
+
+        HIA.w R3, R1
+        HIA.w R4, R2
+        SBR som
+
+        HIA R0, R3
+        DRU
+
+        STP
+
+SOM:    OPT R3, R4
+        KTG
+        EINDPR
