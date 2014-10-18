@@ -1,0 +1,20 @@
+main:   HIA.w R0, -1
+        BST R0
+        HIA R8, R9
+        BST R0
+
+        HIA R1, 0 | m
+        HIA R2, 0 |
+        HIA R3, 0 | m
+
+        LEZ
+
+        STP
+
+fib:    BST R1
+
+        HST R1
+        KTG
+
+f:      RESGR 100
+        EINDPR
