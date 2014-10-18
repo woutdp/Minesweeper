@@ -1,0 +1,50 @@
+main:   HIA.w R0, -1
+        BST R0
+        HIA R8, R9
+        BST R0
+
+        LEZ
+        HIA R1, R0 | n
+
+        | no return value, otherwise it would be: AFT.w R9, 1
+        HIA.a R0, m
+        BST R0
+        BST R1
+        BST R8
+        HIA R8, R9
+        SBR max
+        HST R8
+        HST R1
+
+        HIA R0, m
+        DRU
+        STP
+
+max:    BST R1 | i
+        BST R2 | getal
+        BST R0
+
+        HIA.w R0, 5
+        BIG.i R0, 2(R8)
+
+        HIA.w R1, 0
+for:    HIA R0, 1(R8)
+        VGL R1, R0
+        VSP GRG, forE
+            LEZ
+            HIA R2, R0
+            HIA.i R0, 2(R8)
+            VGL R2, R0
+            VSP KLG, EIF
+                BIG.i R2, 2(R8)
+EIF:    OPT.w R1, 1
+        SPR for
+forE:   HST R0
+        HST R2
+        HST R1
+        KTG
+
+m:      RESGR 1
+        EINDPR
+
+
