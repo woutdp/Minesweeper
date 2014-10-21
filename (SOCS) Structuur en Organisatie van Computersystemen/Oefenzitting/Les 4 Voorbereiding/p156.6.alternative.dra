@@ -43,27 +43,23 @@ FIB:    BST R0
         HIA R2, 2(R8) | adres r
 
         HIA.w R0, 1
-        BIG R0, 0(R2)
-        BIG R0, 1(R2)
-
+        BIG R0, 0(R2+)
+        BIG R0, 0(R2+)
 
         HIA.w R3, 2
 forFib: VGL R3, R1
         VSP GRG, eForFib
                 HIA R4, R2
                 AFT.w R4, 1
-                OPT.w R4, R3
                 HIA R5, 0(R4)
 
                 HIA R4, R2
                 AFT.w R4, 2
-                OPT.w R4, R3
                 HIA R6, 0(R4)
                 OPT R6, R5
 
-                HIA R5, R2
-                OPT R5, R3
-                BIG R6, 0(R5)
+                BIG R6, 0(R2)
+                OPT.w R2, 1
         OPT.w R3, 1
         SPR forFib
 eForFib:

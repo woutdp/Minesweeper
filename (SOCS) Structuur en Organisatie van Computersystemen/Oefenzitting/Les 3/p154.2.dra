@@ -8,7 +8,7 @@ main:	HIA.w R0, -1
 		LEZ
 		HIA R2, R0 | b
 
-		AFT.w R9, -1
+		AFT.w R9, 1
 		BST R2
 		BST R1
 		BST R8
@@ -29,13 +29,11 @@ ggd:	BST R1
 
 while: 	VGL.w R1, 0
 		VSP GEL, eWhile
-		BIG R0, 1(R8)
-		BIG R2, 2(R8)
+        HIA R1, R0
+        HIA R0, R2
 
-		HIA R1, 1(R8) | a
-		HIA R0, 2(R8) | b
-		MOD R1, R0
-		HIA R2, R1
+        MOD R1, R0
+        HIA R2, R1
 		SPR while
 
 eWhile: BIG R0, 3(R8)

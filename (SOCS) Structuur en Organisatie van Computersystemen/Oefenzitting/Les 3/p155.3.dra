@@ -1,19 +1,19 @@
 MAIN:   HIA.w R0, -1
-        HST R0
+        BST R0
         HIA R8, R9
-        HST R0
+        BST R0
 
         HIA.w R1, 0 | x
         HIA.w R2, 0 | y
 
-        LEZ
+        LEZ | lees x in
         HIA R1, R0
 while:  VGL.w R1, -1
         VSP GEL, eWhile
-            LEZ
+            LEZ | lees y in
             HIA R2, R0
 
-            AFT.w R9, -1
+            AFT.w R9, 1
             BST R2
             BST R1
             BST R8
@@ -48,7 +48,7 @@ KGV:    BST R0
         HIA R1, 1(R8) | a
         HIA R2, 2(R8) | b
 
-        AFT.w R9, -1
+        AFT.w R9, 1
         BST R2
         BST R1
         BST R8
@@ -78,6 +78,7 @@ PRINTINT:BST R0
         NWL
         HIA R0, 3(R8)
         DRU
+        NWL
         HST R0
         KTG
 
@@ -89,11 +90,9 @@ GGD:    BST R1
 
 GGDwhile:  VGL.w R1, 0
         VSP GEL, GGDeWhile
-        BIG R0, 1(R8)
-        BIG R2, 2(R8)
+        HIA R1, R0
+        HIA R0, R2
 
-        HIA R1, 1(R8) | a
-        HIA R0, 2(R8) | b
         MOD R1, R0
         HIA R2, R1
         SPR GGDwhile

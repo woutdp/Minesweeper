@@ -1,0 +1,88 @@
+MAIN:   HIA.w R0, -1
+        BST R0
+        HIA R8, R9
+        BST R0
+
+        LEZ
+        HIA R1, R0 | R1 = aantal
+
+        AFT.w R9, 1
+        HIA.w R0, 3
+        BST R0
+        HIA.w R0, 1
+        BST R0
+        BST R1
+        BST R8
+        HIA R8, R9
+        SBR HANOI
+        HST R8
+        HST R1
+        HST R0
+        HST R0
+        STP
+
+HANOI:
+        BST R0
+        BST R1
+        BST R2
+        BST R3
+        BST R4 | via
+
+        HIA R1, 3(R8) | naar
+        HIA R2, 2(R8) | van
+        HIA R3, 1(R8) | n
+
+        HIA.w R0, 6 | 6
+        AFT R0, R2 | - van
+        AFT R0, R1 | - naar
+        HIA R4, R0
+        VGL.w R3, 0
+        VSP NGEL, ENDIFHANOI
+            HIA.w R0, 1
+            BIG R0, 4(R8)
+            SPR ENDHANOI
+ENDIFHANOI:
+        AFT.w R9, 1
+        BST R4
+        BST R2
+        HIA R0, R3
+        AFT.w R0, 1
+        BST R0
+        BST R8
+        HIA R8, R9
+        SBR HANOI
+        HST R8
+        HST R0
+        HST R2
+        HST R4
+        HST R0 | return
+
+        HIA R0, R2
+        DRU
+        HIA R0, R1
+        DRU
+        NWL
+
+        AFT.w R9, 1
+        BST R1
+        BST R4
+        HIA R0, R3
+        AFT.w R0, 1
+        BST R0
+        BST R8
+        HIA R8, R9
+        SBR HANOI
+        HST R8
+        HST R0
+        HST R4
+        HST R1
+        HST R0 | return
+
+ENDHANOI:
+        HST R4
+        HST R3
+        HST R2
+        HST R1
+        HST R0
+        KTG
+        EINDPR
