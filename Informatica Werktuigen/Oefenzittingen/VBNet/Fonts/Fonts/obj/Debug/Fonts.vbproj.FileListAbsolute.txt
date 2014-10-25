@@ -1,0 +1,10 @@
+E:\KULeuven\2014-2015\Sem1\Informatica Werktuigen\Oefenzittingen\VBNet\Fonts\Fonts\bin\Debug\Fonts.exe.config
+E:\KULeuven\2014-2015\Sem1\Informatica Werktuigen\Oefenzittingen\VBNet\Fonts\Fonts\bin\Debug\Fonts.exe
+E:\KULeuven\2014-2015\Sem1\Informatica Werktuigen\Oefenzittingen\VBNet\Fonts\Fonts\bin\Debug\Fonts.pdb
+E:\KULeuven\2014-2015\Sem1\Informatica Werktuigen\Oefenzittingen\VBNet\Fonts\Fonts\bin\Debug\Fonts.xml
+E:\KULeuven\2014-2015\Sem1\Informatica Werktuigen\Oefenzittingen\VBNet\Fonts\Fonts\obj\Debug\Fonts.Form1.resources
+E:\KULeuven\2014-2015\Sem1\Informatica Werktuigen\Oefenzittingen\VBNet\Fonts\Fonts\obj\Debug\Fonts.Resources.resources
+E:\KULeuven\2014-2015\Sem1\Informatica Werktuigen\Oefenzittingen\VBNet\Fonts\Fonts\obj\Debug\Fonts.vbproj.GenerateResource.Cache
+E:\KULeuven\2014-2015\Sem1\Informatica Werktuigen\Oefenzittingen\VBNet\Fonts\Fonts\obj\Debug\Fonts.exe
+E:\KULeuven\2014-2015\Sem1\Informatica Werktuigen\Oefenzittingen\VBNet\Fonts\Fonts\obj\Debug\Fonts.xml
+E:\KULeuven\2014-2015\Sem1\Informatica Werktuigen\Oefenzittingen\VBNet\Fonts\Fonts\obj\Debug\Fonts.pdb
