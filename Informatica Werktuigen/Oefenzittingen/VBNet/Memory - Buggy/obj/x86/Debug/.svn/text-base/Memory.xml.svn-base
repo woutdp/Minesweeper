@@ -1,0 +1,44 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+Memory
+</name>
+</assembly>
+<members>
+<member name="M:Memory.PictureTile.#ctor(System.Int32,System.Drawing.Image,System.Int32,System.Int32)">
+	<summary>
+ Constructor.
+ </summary>
+	<param name="tileSize">Grootte</param>
+	<param name="image">Geassocieerd plaatje</param>
+	<param name="x">X-positie in het spelrooster</param>
+	<param name="y">Y-positie in het spelrooster</param>
+</member><member name="M:Memory.PictureTile.Draw(System.Drawing.Graphics,System.Int32,System.Int32)">
+	<summary>
+ Tekent de tile.
+ </summary>
+	<param name="g">Te gebruiken graphics object (dient om kunnen tekenen naar het scherm)</param>
+	<param name="x">X positie op het scherm</param>
+	<param name="y">Y positie op het scherm</param>
+	<remarks></remarks>
+</member><member name="T:Memory.PictureTile">
+	<summary>
+ Stelt een "tile" (vakje) voor in het spelrooster. Het houdt de toestand van een tile bij en is verantwoordelijk voor het tekenen ervan.
+ </summary>
+</member><member name="P:Memory.My.Resources.Resources.ResourceManager">
+	<summary>
+  Returns the cached ResourceManager instance used by this class.
+</summary>
+</member><member name="P:Memory.My.Resources.Resources.Culture">
+	<summary>
+  Overrides the current thread's CurrentUICulture property for all
+  resource lookups using this strongly typed resource class.
+</summary>
+</member><member name="T:Memory.My.Resources.Resources">
+	<summary>
+  A strongly-typed resource class, for looking up localized strings, etc.
+</summary>
+</member>
+</members>
+</doc>
