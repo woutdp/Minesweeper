@@ -1,0 +1,70 @@
+        |struct rationaalgetal
+        | +0: int teller
+        | +1: int noemer
+        | +2: int gehdeel
+
+main:   HIA.w R0, -1
+        BST R0
+        HIA R8, R9
+        BST R0
+
+        HIA.a R0, Q
+        BST R0
+        BST R8
+        HIA R8, R9
+        SBR leesrationaal
+        HST R8
+        OPT.w R9, 1
+
+mainWhile:
+        HIA.a R1, Q
+        HIA R0, 1(R1) | noemer
+        VGL.w R0, 0
+        VSP GEL, mainWhileEnd
+
+            HIA R0, Q+2
+            BST R0
+            HIA R0, Q+1
+            BST R0
+            HIA R0, Q+0
+            BST R0
+            BST R8
+            HIA R8, R9
+            SBR drukrationaal
+            HST R8
+            OPT.w R9, 3
+
+            HIA.a R0, Q
+            BST R0
+            BST R8
+            HIA R8, R9
+            SBR leesrationaal
+            HST R8
+            OPT.w R9, 1
+
+        SPR mainWhile
+mainWhileEnd:
+        STP
+
+leesrationaal:
+        HIA R0, 0(R8)
+        LEZ
+        BIG R0, 0(R0)
+        LEZ
+        BIG R0, 1(R0)
+        LEZ
+        BIG R0, 2(R0)
+        KTG
+
+drukrationaal:
+        HIA R0, 0(R8)
+        DRU
+        HIA R0, 1(R8)
+        DRU
+        HIA R0, 2(R8)
+        DRU
+        NWL
+        KTG
+
+Q:      RESGR 3
+        EINDPR
