@@ -70,6 +70,15 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="gridTile.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="SizeForm.Designer.vb">
+      <DependentUpon>SizeForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="SizeForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Game.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -94,6 +103,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="SizeForm.resx">
+      <DependentUpon>SizeForm.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Game.resx">
       <DependentUpon>Game.vb</DependentUpon>
     </EmbeddedResource>

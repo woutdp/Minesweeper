@@ -4,24 +4,37 @@ Option Strict On
 Imports System.Runtime.InteropServices
 
 Public Class Game
-    Dim m_gridTileAmountX As Integer = 2
-    Dim m_gridTileAmountY As Integer = 2
-    Dim m_menuWidth As Integer = 150
-    Dim m_grid(m_gridTileAmountX - 1, m_gridTileAmountY - 1) As Label
-    Dim m_roundnessCorners As Integer = 15
+    Private m_gridTileAmountX As Integer
+    Private m_gridTileAmountY As Integer
+    Private m_menuWidth As Integer = 150
+    Private m_grid(,) As Label
+    Private m_roundnessCorners As Integer = 15
 
-    Dim m_lblScore As Label
-    Dim m_lblHighScore As Label
-    Dim m_score As Integer = 0
-    Dim m_highScore As Integer = 0
+    Private m_lblScore As Label
+    Private m_lblHighScore As Label
+    Private m_score As Integer = 0
+    Private m_highScore As Integer = 0
 
-    Dim WithEvents m_btnRestart As Button
-    Dim WithEvents m_btnJoker As Button
-    Dim m_jokersAvailable As Integer = 1
-    Dim m_bJokerActive As Boolean = False
+    Private WithEvents m_btnResize As Button
+    Private WithEvents m_btnRestart As Button
+    Private WithEvents m_btnJoker As Button
+    Private m_jokersAvailable As Integer = 1
+    Private m_bJokerActive As Boolean = False
+    Public Sub New()
+        m_gridTileAmountX = 4
+        m_gridTileAmountY = 4
+        InitializeComponent()
+    End Sub
 
-    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+    Public Sub New(Optional width As Integer = 4, Optional height As Integer = 4, Optional highscore As Integer = 0)
+        m_gridTileAmountX = width
+        m_gridTileAmountY = height
+        m_highScore = highscore
+        InitializeComponent()
+    End Sub
+    Private Sub Game_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         'Initialize Grid
+        ReDim m_grid(m_gridTileAmountX - 1, m_gridTileAmountY - 1)
         Dim tileSize As Integer = 80 'Size of the tiles in x and y
         Dim space As Integer = 7 ' Space in between tiles
         Dim spaceXBorder As Integer = 30 'How much from left border
@@ -29,6 +42,9 @@ Public Class Game
 
         Dim gridWidth As Integer = (tileSize + space) * m_gridTileAmountX + spaceXBorder * 2
         Dim gridHeight As Integer = (tileSize + space) * m_gridTileAmountY + spaceYBorder * 3
+        If gridHeight < 450 Then
+            gridHeight = 450
+        End If
 
         Me.Size = New Size(gridWidth + m_menuWidth, gridHeight)
 
@@ -59,7 +75,7 @@ Public Class Game
         m_lblScore.Name = "lblScore"
         m_lblScore.Location = New Point(gridWidth, spaceYBorder)
         m_lblScore.Text = "Score:" & Environment.NewLine & CStr(m_score)
-        m_lblScore.ForeColor = Color.White
+        m_lblScore.ForeColor = ColorTranslator.FromOle(RGB(187, 173, 160))
         Me.Controls.Add(m_lblScore)
 
         'Initialize highscore
@@ -70,8 +86,20 @@ Public Class Game
         m_lblHighScore.Name = "lblHighScore"
         m_lblHighScore.Location = New Point(gridWidth, spaceYBorder + 100)
         m_lblHighScore.Text = "Highscore:" & Environment.NewLine & CStr(m_highScore)
-        m_lblHighScore.ForeColor = Color.White
+        m_lblHighScore.ForeColor = ColorTranslator.FromOle(RGB(187, 173, 160))
         Me.Controls.Add(m_lblHighScore)
+
+        'Initialize m_btnResize
+        m_btnResize = New Button
+        m_btnResize.Size = New Size(100, 40)
+        m_btnResize.TextAlign = ContentAlignment.MiddleCenter
+        m_btnResize.Font = New Font("Calibri", 12, FontStyle.Regular)
+        m_btnResize.Name = "btnResize"
+        m_btnResize.Location = New Point(gridWidth, gridHeight - 220)
+        m_btnResize.Text = "Resize Board"
+        m_btnResize.ForeColor = Color.Black
+        m_btnResize.BackColor = Color.White
+        Me.Controls.Add(m_btnResize)
 
         'Initialize m_btnJoker
         m_btnJoker = New Button
@@ -100,7 +128,6 @@ Public Class Game
         InitializeBoard()
     End Sub
     Private Sub Form1_KeyUp(sender As System.Object, e As System.Windows.Forms.KeyEventArgs) Handles MyBase.KeyUp
-        'MsgBox(e.KeyCode.ToString) 'or .KeyData or .KeyValue
         Dim keyCode As Keys = e.KeyCode
         Select Case keyCode
             Case Keys.Up, Keys.Down, Keys.Left, Keys.Right
@@ -289,6 +316,11 @@ Public Class Game
         m_score = amount
         m_lblScore.Text = "Score:" & Environment.NewLine & CStr(m_score)
     End Sub
+    Public Sub BoardResize(width As Integer, height As Integer)
+        Dim new_game As Game = New Game(width, height, m_highScore)
+        new_game.Show()
+        Me.Close()
+    End Sub
     Private Sub CorrectGame()
         Dim colInvalid As Color = ColorTranslator.FromOle(RGB(255, 0, 0))
         Dim colNothing As Color = ColorTranslator.FromOle(RGB(205, 193, 180))
@@ -381,8 +413,9 @@ Public Class Game
         End If
 
     End Sub
-    Private Sub btnRestart_Click(sender As Object, e As EventArgs) Handles m_btnRestart.Click
-        InitializeBoard()
+    Private Sub btnResize_Click(sender As Object, e As EventArgs) Handles m_btnResize.Click
+        Dim sizeForm As SizeForm = New SizeForm(Me)
+        sizeForm.Show()
     End Sub
     Private Sub btnJoker_Click(sender As Object, e As EventArgs) Handles m_btnJoker.Click
         If m_jokersAvailable > 0 Then
@@ -392,6 +425,9 @@ Public Class Game
             MsgBox("No jokers left!")
         End If
         CorrectGame()
+    End Sub
+    Private Sub btnRestart_Click(sender As Object, e As EventArgs) Handles m_btnRestart.Click
+        InitializeBoard()
     End Sub
     Private Sub lblTile_Click(sender As Object, e As EventArgs)
         If m_bJokerActive Then
