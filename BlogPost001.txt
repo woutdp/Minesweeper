@@ -41,3 +41,5 @@ Understanding the Javascript gameloop
 
 'Hello Gameloop'
     With the reference in hand I will build a Gameloop. I also read there was an fps meter I could easily implement. Knowing this is a valuable asset to my game, this will be the first thing I will make. An empty screen with an fps meter.
+
+    (REF 1)
