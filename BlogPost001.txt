@@ -1,0 +1,43 @@
+INTRODUCTION
+    I want to create a game and record my progress in my design decisions. The game will be Minesweeper and it will be playable on a webpage. The goal will be to get a better understanding of webtechnologies for games and to get better at designing. I want the game rules to resemble classic Minesweeper, and I want to explore the aestethics of the game. Recently having made a 2048 clone in vb.net has shown me how important it is to have a beautifull and fluid experience that is rewarding. The game should feel like a solid object you can interact with, and should feel natural and easy to learn. I believe it can break or make the entire game.
+
+Why Minesweeper?
+    Minesweeper has a simple concept, is fun and I already made it once in C++. Since the goal is not to get better at coding, but to learn new technologies and get better at designing, I decided to create a game I was familiar with.
+
+The rules of minesweeper
+    The rules of the game will be similar to that of classic Minesweeper. It's possible that I will add features to my desire, but the underlying gameplay will be the same.
+    -The game will feature a grid of squares, let's say 20 by 20.
+    -Each square represents a tile.
+    -On a tile there can either a mine, or an empty square.
+    -When clicking on a tile the tile will show it's true nature, a mine or an empty square.
+    -If the player clicks on a square that is a mine they will lose the game
+    -When an empty square is adjacent to mine(s), it will show a number with how many mines are adjacent.
+    -If it's not adjacent to a mine it will show the nature of the surrounding tiles, each of them will undergo the same process.
+    -A player can highlight where he thinks mines are with a symbol, this is to help the player visualize what he thinks the true nature of the minefield looks like.
+    -The player wins when he has shown the true nature of every tile that is not a mine. The score of the player will be the time it took for him to do this.
+
+Aesthethics
+    I want the experience to 'feel' fluid. This will be my main goal. It should feel natural and beautiful. The game should be easy to pick up and play. There shouldn't be any bariers to play the game. Deeper customizable features should be naturally shown when it feels logical. I will use the game 2048 http://gabrielecirulli.github.io/2048/ as my main source of inspiration for the feel of the game. I will evaluate what makes 2048 an enjoyable experience, and I will try to apply it onto my game. This doesn't mean I will use the same style as 2048.
+
+Code readability and scaleability
+    The code should be easy to read and easy to scale. I like to code quick and dirty and refactor after every main feature, but I should learn to think more about my code, and the structure of it before I put write it. This will be a secondary goal. This will be something for myself and I will evaluate myself after this project.
+
+BUILDING THE GAME
+Tools and Tech
+    I'm not too sure what I will need. This list may be inacurrate.
+    HTML5
+    CSS
+    Javascript
+
+    Tools:
+    SublimeText 3
+    Photoshop/Illustrator
+    Pen and paper
+
+Understanding the Javascript gameloop
+    I've built some stuff in Javascript and coming from a background in C++, this was sometimes confusing. Javascript is event driven and this made my code difficult to understand. I would do one thing in a gameloop and other things with events.
+    It's probably possible to create a nice looking version with events only, but I want to have the level of control that I know I can get with my trusted gameloop.
+    I found a great reference on (codeincomplete)[http://codeincomplete.com/posts/2013/12/4/javascript_game_foundations_the_game_loop/] that explains the gameloop in Javascript
+
+'Hello Gameloop'
+    With the reference in hand I will build a Gameloop. I also read there was an fps meter I could easily implement. Knowing this is a valuable asset to my game, this will be the first thing I will make. An empty screen with an fps meter.
