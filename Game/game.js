@@ -16,6 +16,7 @@ var Game = {
         // Gameloop function
         function Frame() {
             // This should always be called at the beginning of Frame
+            fpsmeter.hide();
             fpsmeter.tickStart();
 
             now = Timestamp();
@@ -34,7 +35,8 @@ var Game = {
 
         // Will return the time since startup
         function Timestamp() {
-          return window.performance && window.performance.now ? window.performance.now() : new Date().getTime();
+          return window.performance && window.performance.now ? window.performance.now()
+            : new Date().getTime();
         }
 
         // call frame for the first time

@@ -51,7 +51,7 @@
     </ul>
 
 <h2>Understanding the Javascript gameloop</h2>
-    <p>I've built some stuff in Javascript and coming from a background in C++, this was sometimes confusing. Javascript is event driven and this made my code difficult to understand. I would do one thing in a gameloop and other things with events.</p>
+    <p>I've built some stuff in Javascript in the past, and coming from a background in C++ this was sometimes confusing. Javascript is event driven and this made my code difficult to understand. I would do one thing in a gameloop and other things with events.</p>
     <p>It's probably possible to create a nice looking version with events only, but I want to have the level of control that I know I can get with my trusted gameloop.</p>
     <p><a href="http://codeincomplete.com/posts/2013/12/4/javascript_game_foundations_the_game_loop/" target="_blank">I found a great reference at codeincomplete</a> that explains the gameloop in Javascript.</p>
 
@@ -272,7 +272,7 @@ var Tile = function(x, y, size){
 
 Tile.prototype.Update = function(dt){
         //console.log("Update")
-    }
+}
 
 Tile.prototype.Render = function(ctx){
         //console.log("Render")
@@ -281,6 +281,100 @@ Tile.prototype.Render = function(ctx){
 }
     </code>
     </pre>
+    <h2>Handling input and generating tiles</h2>
+    <p>There is still no way to interact with the game. Time to add input. I will make tiles clickable, when a tile is clicked I want them to change color.</p>
+    <img src="Clickfield.png" alt="Click field">
+    <p>From now on out I will show less code and more pictures of my progress. If you want to see how I did this then you can check the source code.</p>
+    <p>I don't like how the canvas doesn't resize according to the size of my field so let's change that. Let's also add a minefield generator while we're at it. The red tiles represent mines.</p>
+    <img src="NicerCanvas.png" alt="Nicer canvas">
+    <p>Because I know you love code, here is how I did the generating of mines.</p>
+    <pre><code>
+Field.prototype.GenerateBombs = function(amount){
+    var curAmount = 0;
+    while (curAmount < amount){
+        var x = parseInt(Math.random() * this.fieldX);
+        var y = parseInt(Math.random() * this.fieldY);
+        if (this.tile[x][y].GetBomb() === false){
+            this.tile[x][y].SetBomb(true);
+            curAmount += 1;
+        }
+    }
+}
+    </code></pre>
+    <p>It generates a random tile and checks if it doesn't contain a bomb. If it doesn't then it adds a bomb and increments the current amount of bombs added by one. The while loop keeps going until the function has added the requested amount of bombs.</p>
+    <p>Time to add some states to my tile. There are a couple of states a tile can have but I will add the most basic ones first, SHOWN and HIDDEN. I will try to do this with some sort of enumerator to keep things clean. When clicked the state should change to shown.</p>
+    <img src="States.png" alt="States">
+    <p>Perfect! As you can see I lost 8 times this game, but that's ok for now. I can click on tiles and show their true nature.</p>
+    <p>Next I will implement the numbers. When shown it should show how many mines are adjacent to the tile.</p>
+    <img src="FieldWithNumbers.png" alt="Field with numbers">
+    <p>Seems pretty ok. All numbers seem to be correct. Here is how I did it.</p>
+    <pre><code>
+Field.prototype.CalculateSurroundingTile = function(tile){
+    var x = tile.GetNX();
+    var y = tile.GetNY();
+
+    var surrounding = 0;
+
+    if (x != 0)
+        if (this.tile[x-1][y].GetBomb()) surrounding += 1; //left
+    if (x < this.fieldX-1)
+        if (this.tile[x+1][y].GetBomb()) surrounding += 1; //right
+    if (y != 0)
+        if (this.tile[x][y-1].GetBomb()) surrounding += 1; //up
+    if (y < this.fieldY-1)
+        if (this.tile[x][y+1].GetBomb()) surrounding += 1; //down
+
+    if (x != 0 && y != 0)
+        if (this.tile[x-1][y - 1].GetBomb()) surrounding += 1; //left up
+    if (x < this.fieldX-1 && y != 0)
+        if (this.tile[x+1][y - 1].GetBomb()) surrounding += 1; //right up
+    if (y < this.fieldY-1 && x != 0)
+        if (this.tile[x - 1][y+1].GetBomb()) surrounding += 1; //left down
+    if (y < this.fieldY-1 && x < this.fieldX - 1)
+        if (this.tile[x + 1][y+1].GetBomb()) surrounding += 1; //right down
+
+    return surrounding;
+}
+    </code></pre>
+    <p>Now comes a bit of a tricky part. When clicking on a tile with no number, it should show the surrounding tiles, and they on their turn should show their surrounding tiles if they are empty too and so on. We should be able to solve this with some recursive functions. I probably have to rewrite some stuff too. Let's start by making a function that just shows all surrounding tiles of a tile.</p>
+    <img src="ShowEmptyField.png" alt="Show empty tiles">
+    <p>Kebam. I use 2 functions to do this recursively. Here they are.</p>
+    <pre><code>
+// This one is called from the tile class when you click on a tile
+Field.prototype.ShowTile = function(tile){
+    //Check if the adjecent tile is 0 and doesn't have a bomb
+    if (tile.GetState() != tileState.type.SHOWN && tile.GetSurrounding() === 0 && tile.GetBomb() === false){
+        tile.SetState(tileState.type.SHOWN);
+        this.RevealSurrounding(tile);
+    }
+    else{
+        tile.SetState(tileState.type.SHOWN);
+    }
+}
+
+Field.prototype.RevealSurrounding = function(tile){
+    var x = tile.GetNX();
+    var y = tile.GetNY();
+
+    if (x != 0)
+        this.ShowTile(this.tile[x-1][y]);
+    if (x < this.fieldX-1)
+        this.ShowTile(this.tile[x+1][y]);
+    if (y != 0)
+        this.ShowTile(this.tile[x][y-1]);
+    if (y < this.fieldY-1)
+        this.ShowTile(this.tile[x][y+1]);
+
+    if (x != 0 && y != 0)
+        this.ShowTile(this.tile[x-1][y-1]);
+    if (x < this.fieldX-1 && y != 0)
+        this.ShowTile(this.tile[x+1][y-1]);
+    if (y < this.fieldY-1 && x != 0)
+        this.ShowTile(this.tile[x-1][y+1]);
+    if (y < this.fieldY-1 && x < this.fieldX - 1)
+        this.ShowTile(this.tile[x+1][y+1]);
+}
+    </code></pre>
 </div>
 </body>
 </html>
