@@ -2,15 +2,18 @@
 <html>
 <head>
 <title>Minesweeper - blogpost 0</title>
-<link href="stylesheet.css" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="highlight/styles/monokai_sublime.css">
 <script src="highlight/highlight.pack.js"></script>
-<script>hljs.initHighlightingOnLoad();</script>
+<script>
+  hljs.configure({tabReplace: '    '});
+  hljs.initHighlightingOnLoad();
+</script>
+<link href="stylesheet.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 <div id="center">
 <h1>INTRODUCTION</h1>
-    <p class="introduction">I want to create a game and record my progress in my design decisions. The game will be Minesweeper and it will be playable on a web page. The goal will be to get a better understanding of web technologies for games and to get better at designing. I want the game rules to resemble classic Minesweeper, and I want to explore the aesthetics of the game. Recently having made a 2048 clone in vb.net has shown me how important it is to have a beautiful and fluid experience that is rewarding. The game should feel like a solid object you can interact with, and should feel natural and easy to learn. I believe it can break or make the entire game.</p>
+    <p class="introduction">I wanted to create a game and record my progress in my design decisions. The game will be Minesweeper and it will be playable on a web page. The goal will be to get a better understanding of web technologies for games and to get better at designing. I want the game rules to resemble classic Minesweeper, and I want to explore the aesthetics of the game. Recently having made a 2048 clone in vb.net has shown me how important it is to have a beautiful and fluid experience that is rewarding. The game should feel like a solid object you can interact with, and should feel natural and easy to learn. I believe it can break or make the entire game.</p>
 
 <h2>Why Minesweeper?</h2>
     <p>Minesweeper has a simple concept, is fun and I already made it once in C++. Since the goal is not to get better at coding, but to learn new technologies and get better at designing, I decided to create a game I was familiar with.</p>
@@ -40,8 +43,8 @@
     <p>I'm not too sure what I will need. This list may be inaccurate.</p>
     <ul>
         <li>HTML5</li>
-        <li>CSS</li>
         <li>Javascript</li>
+        <li>CSS</li>
         <li>SublimeText 3</li>
         <li>Photoshop/Illustrator</li>
         <li>Pen and paper</li>
@@ -57,10 +60,226 @@
     <img src="FPSCanvas.png" alt="FPSCanvas">
     <p>It was on the zeroth day god created the framerate, and god said, let there be an Update() function and a Render() function, and shall there be no loss of frames, and god saw it was good. And it was fairly easy to do. Here is the code.</p>
     <pre>
-        <code class="html">
-            <p>aaaaaaaaaaaaa</p>
-            <p>test</p>
+        <code>
+var canvas = document.getElementById("game"),
+
+var now, //the time since startup in milliseconds
+    dt   = 0, // time between last frame
+    last = Timestamp(), // time from the previous frame
+    fps = 60, // fps cap
+    step = 1/fps; // time passed in each frame in seconds
+
+var fpsmeter = new FPSMeter({decimals: 0,
+                            graph: true,
+                            theme: 'dark',
+                            });
+
+// Gameloop function
+function Frame() {
+    // This should always be called at the beginning of Frame
+    fpsmeter.tickStart();
+
+    now = Timestamp();
+    dt = dt + Math.min(1, (now - last) / 1000);
+    while(dt > step) {
+        dt = dt - step;
+        Update(step);
+    }
+    Render(dt);
+    last = now;
+
+    fpsmeter.tick();
+
+    requestAnimationFrame(Frame);
+}
+// Update function
+function Update(dt){
+}
+
+// Rendering function
+function Render(dt){
+}
+
+// Will return the time since startup
+function Timestamp() {
+  return window.performance && window.performance.now ? window.performance.now()
+    : new Date().getTime();
+
+}
+
+// call frame for the first time
+requestAnimationFrame(Frame);
         </code>
+    </pre>
+    <p>And the HTML code.</p>
+    <pre>
+        <code>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;canvas id="game" width="300" height="300"
+    style="border:1px solid #000000;"&gt;
+    &lt;/canvas&gt;
+    &lt;script src="FPSMeter.js"&gt;&lt;/script&gt;
+    &lt;script src="game.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+        </code>
+    </pre>
+    <h2>Generating a field</h2>
+    <p>Next up I want to generate a field of tiles. It doesn't have to look pretty yet, it just has to work. I probably will start using some objects. I will need a tile object, and a field object that is basically a 2D array of tile objects.</p>
+    <img src="Minefield.png" alt="MineField">
+    <p>I Added a lot of code to the project and changed some stuff around to make it more clean. The html file basically stayed the same except for some includes. The gameloop currently looks like this.</p>
+    <pre><code>
+'use strict'
+var Game = {
+    run: function(options){
+        var now, //the time since startup in milliseconds
+            dt      = 0, // time between last frame
+            last    = Timestamp(), // time from the previous frame
+            fps     = 60, // fps cap
+            update  = options.update,
+            render  = options.render,
+            step    = 1/fps; // time passed in each frame in seconds
+
+        var fpsmeter = new FPSMeter({decimals: 0,
+                                    graph: true,
+                                    theme: 'dark',
+                                    });
+        // Gameloop function
+        function Frame() {
+            // This should always be called at the beginning of Frame
+            fpsmeter.tickStart();
+
+            now = Timestamp();
+            dt = dt + Math.min(1, (now - last) / 1000);
+            while(dt > step) {
+                dt = dt - step;
+                update(step);
+            }
+            render(dt);
+            last = now;
+
+            fpsmeter.tick();
+
+            requestAnimationFrame(Frame);
+        }
+
+        // Will return the time since startup
+        function Timestamp() {
+          return window.performance && window.performance.now ? window.performance.now()
+            : new Date().getTime();
+        }
+
+        // call frame for the first time
+        requestAnimationFrame(Frame);
+    },
+}
+    </code></pre>
+    <p>I created a new file called application.js that looks like this.</p>
+    <pre><code>
+'use strict'
+var Application = (function() {
+    //===================================
+    // CONSTANTS
+    //===================================
+    var     FIELDX = 15,
+            FIELDY = 15,
+            TILESIZE = 15,
+            TILESPACE = 1;
+
+    //===================================
+    // VARIABLES
+    //===================================
+
+    var canvas = document.getElementById("game");
+    var ctx = canvas.getContext('2d');
+
+    var field = new Field(FIELDX, FIELDY, TILESIZE, TILESPACE);
+
+    //===================================
+    // GAME - UPDATE/RENDER
+    //===================================
+
+    function Update(dt) {
+        field.Update(dt);
+    }
+
+    function Render(dt) {
+        canvas.width = canvas.width; // This clears the canvas
+
+        field.Render(ctx);
+    }
+
+    Game.run({update: Update, render : Render});
+})();
+    </code></pre>
+    <p>This way my code is better encapsulated. Ofcourse I also added 2 new objects. One field object and one tile object. They are as followed.</p>
+    <pre>
+    <code>
+'use strict'
+var Field = function(fieldX,fieldY, tileSize, tileSpace){
+    console.log('field created');
+
+    //===================================
+    // VARIABLES
+    //===================================
+    this.fieldX     = fieldX;
+    this.fieldY     = fieldY;
+    this.tileSize   = tileSize;
+    this.tileSpace  = tileSpace;
+
+    this.tile = [];
+
+    for (var i = 0, l = fieldX; i < l; i++) {
+        this.tile[i] = [];
+        for (var j = 0, l2 = fieldY; j < l2; j++) {
+            this.tile[i][j] = new Tile(i*(tileSize+tileSpace), j*(tileSize+tileSpace), tileSize);
+        }
+    }
+}
+
+Field.prototype.Update = function(dt){
+        //console.log("Update")
+        //this.x = Math.cos(new Date().getTime()/300)*100+ 100;
+        //this.y = Math.sin(new Date().getTime()/300)*100+ 100;
+    }
+
+Field.prototype.Render = function(ctx){
+    //console.log("Render")
+    for (var i = 0, l = this.fieldX; i < l; i++) {
+        for (var j = 0, l2 = this.fieldY; j < l2; j++) {
+            this.tile[i][j].Render(ctx);
+        }
+    }
+}
+    </code>
+    </pre>
+    <pre>
+    <code>
+'use strict'
+var Tile = function(x, y, size){
+    console.log('tile created');
+    //===================================
+    // VARIABLES
+    //===================================
+    this.x = x;
+    this.y = y;
+    this.size = size;
+}
+
+Tile.prototype.Update = function(dt){
+        //console.log("Update")
+    }
+
+Tile.prototype.Render = function(ctx){
+        //console.log("Render")
+        ctx.fillStyle="#5095F4";
+        ctx.fillRect(this.x, this.y, this.size, this.size);
+}
+    </code>
     </pre>
 </div>
 </body>

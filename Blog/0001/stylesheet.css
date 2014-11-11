@@ -1,11 +1,17 @@
 * {
     margin: 0px;
-    font-family: "Arial";
-    font-size: 16pt;
 }
 
 p {
+    /*font-family: "Arial";*/
+    font-family: "DejaVu Mono";
+    font-size: 14pt;
     padding: 5px;
+}
+
+ul{
+    font-family: "Arial";
+    font-size: 14pt;
 }
 
 h1 {
@@ -40,4 +46,3 @@ img {
 .introduction {
     font-style: italic;
 }
-
