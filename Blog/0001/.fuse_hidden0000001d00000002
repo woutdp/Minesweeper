@@ -404,25 +404,9 @@ Field.prototype.RevealSurrounding = function(tile){
     <script src="Game01/FPSMeter.js"></script>
     <script src="Game01/game.js"></script>
     <script src="Game01/application.js"></script>
-    <p>As you can see it's already playable, but there are still some things that are annoying. For example, you can die on the first click. You can't reset the game and you don't know if you've won. There are also some minor bugs with the selecting and hovering. Not being able to win and not being able to die on the first click are the most important ones now. Let's fix them first.</p>
-    <p>After generating a big field, the game seems to be running way too slow. I read in the original document for the implementation of the gameloop and render pipeline that we could implement a caching mechanism to render only when the canvas changed. So let's implement this quickly before we do anything else. I won't go into detail how I did it as you can look it up <a href="http://codeincomplete.com/posts/2013/12/8/javascript_game_foundations_rendering/">here</a>.</p>
-    <h2>Animation</h2>
-    <p>Let's implement a little animation. When the tiles get initialised they should 'pop up'.</p>
-    <p>Let's also add a quick reset button so I can test it.</p>
-    <link href="stylesheet.css" rel="stylesheet" type="text/css">
-    <div id="gameContainer">
-        <button type="button" style="display:block; margin-left:auto; margin-right:auto; padding: 10px; margin-bottom: 5px" id="resetButton">Reset</button>
-        <canvas id="game02" style="display:block; margin: auto; border:0px solid #000010;"> Canvas element not supported </canvas>
-    </div>
-    <script src="Game02/global.js"></script>
-    <script src="Game02/tile.js"></script>
-    <script src="Game02/field.js"></script>
-    <script src="Game02/FPSMeter.js"></script>
-    <script src="Game02/game.js"></script>
-    <script src="Game02/application.js"></script>
-    <p>Looks flipping great.</p>
-    <p>This is very fun, I'm going to expand the animations.</p>
-    <p>After experimenting a bit with animations, it has come to my attention that fonts don't like to get scaled. When making them smaller, they appear wobbly. It's very important that they appear normal.</p>
+    <p>As you can see it's already playable, but there are still some things that are annoying. For example, you can die on the first click. You can't reset the game and you don't know if you've won. There are also some minor bugs with the selecting and hovering.</p>
+    <h2>A better input</h2>
+    <p>I feel the next step is implementing a better input system. With this system I will be able to do much more. So let's do that first. There is no way to see if the button is being pressed on a tile and where for now. I'll need to investigate how to do this properly in javascript.</p>
 </div>
 </body>
 </html>

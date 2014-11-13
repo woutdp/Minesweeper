@@ -7,7 +7,7 @@ var Application = (function() {
             FIELDY = 20, //max of 50 because of paint draw image?
             TILESIZE = 22,
             TILESPACE = 2,
-            DIFFICULTY = 10, //a higher number means LESS bombs
+            DIFFICULTY = 7, //a higher number means LESS bombs
             // 4 = Admiral
             // 5 = General
             // 7 = Sergeant
@@ -18,7 +18,7 @@ var Application = (function() {
     //===================================
     // VARIABLES
     //===================================
-    var canvas = document.getElementById("game");
+    var canvas = document.getElementById("game02");
     var resetButton = document.getElementById("resetButton");
     resetButton.addEventListener("click", ResetField);
     var ctx = canvas.getContext('2d');
@@ -81,6 +81,7 @@ var Application = (function() {
     function ActualRender(ctx) {
         canvas.width = canvas.width; // This clears the canvas
 
+        ctx.font = (TILESIZE) + "px Verdana";
         field.Render(ctx);
     }
 

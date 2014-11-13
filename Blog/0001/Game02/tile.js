@@ -126,26 +126,6 @@ Tile.prototype.Update = function(dt){
                     Invalidate();
                 }
                 break;
-            case "popinpopup":
-                var framePercentage = this.animcounter/this.animtime;
-
-                if (framePercentage >= 0.5){
-                    this.SetBomb(false);
-                    this.SetState(tileState.type.HIDDEN);
-                }
-
-                if (framePercentage > 1){
-                    this.Animate("hold");
-                    this.ResetDimensions();
-                }else{
-                    this.w = this.ow * Math.abs((framePercentage*2 - 1));
-                    this.h = this.oh * Math.abs((framePercentage*2 - 1));
-                    this.x = this.ox + (this.ow - this.w)/2
-                    this.y = this.oy + (this.oh - this.h)/2
-                    this.animcounter += dt;
-                    Invalidate();
-                }
-                break;
             case "spread":
                 var framePercentage = this.animcounter/this.animtime;
 
@@ -154,6 +134,20 @@ Tile.prototype.Update = function(dt){
                 }else{
                     this.w = this.ow + framePercentage*5;
                     this.h = this.oh + framePercentage*5;
+                    this.x = this.ox + (this.ow - this.w)/2
+                    this.y = this.oy + (this.oh - this.h)/2
+                    this.animcounter += dt;
+                    Invalidate();
+                }
+                break;
+            case "return":
+                var framePercentage = this.animcounter/this.animtime;
+
+                if (framePercentage > 1){
+                    this.Animate("hold");
+                }else{
+                    this.w = this.w - framePercentage*5;
+                    this.h = this.h - framePercentage*5;
                     this.x = this.ox + (this.ow - this.w)/2
                     this.y = this.oy + (this.oh - this.h)/2
                     this.animcounter += dt;
@@ -173,10 +167,7 @@ Tile.prototype.Render = function(ctx){
 
     //Draw the text
     ctx.fillStyle = "#FFFFFF";
-    var fontSize = parseInt((this.w+this.h)/2)
-    ctx.font = "600 " + fontSize + "px Arial";
-    ctx.textAlign="center";
-    ctx.fillText(this.text,(this.x-(13*(this.w/this.ow))+fontSize),this.y-(3*(this.h/this.oh))+fontSize);
+    ctx.fillText(this.text,this.x+4,this.y+19);
 }
 
 Tile.prototype.MouseUp = function(event){
@@ -232,43 +223,18 @@ Tile.prototype.Animate = function(animation, delay){
             this.animtime = 0.4;
             this.animation = "popup";
             break;
-        case "popinpopup":
-            this.ResetDimensions();
-            this.animcounter = 0.0;
-            this.animtime = 0.4;
-            this.animation = "popinpopup";
-            break;
         case "spread":
             this.animcounter = 0.0;
             this.animtime = 0.3;
             this.animation = "spread";
             break;
+        case "return":
+            this.animtime = 0.4;
+            this.animation = "return";
+            break;
         default:
         alert("Unknown animation")
     }
-}
-
-Tile.prototype.Reset = function(){
-    //this.tile[i][j].Animate("popinpopup");
-    //this.tile[i][j].Animate("popup", (i+j)/90);
-    //this.tile[i][j].Animate("popup", (i*j)/this.total);
-    //this.tile[i][j].Animate("popup", Math.sqrt((i*j)/this.total));
-    //this.tile[i][j].Animate("popup", (i/(j+4))/2);
-    //this.tile[i][j].Animate("popup", Math.sqrt((i/(j+4))/2));
-    //this.tile[i][j].Animate("popup", (j/(i+4))/2);
-    //this.tile[i][j].Animate("popup", Math.sin((j*i)));
-    //this.tile[i][j].Animate("popup", Math.random()*0.8);
-
-    //I like this one
-    this.Animate("popinpopup", Math.sqrt(this.nx+1 + Math.random()*10)*Math.sqrt(this.ny+10)/20);
-
-    //Sideways random
-    //var h = 0.5 * Math.random()/20; //The smaller the bigger the circles
-    //var w = 0.5 * Math.random()/20;
-    //this.tile[i][j].Animate("popup", Math.sin(i*w)*Math.cos(j*h)*2);
-
-    //math sqrt makes it go slow to fast
-    //this.tile[i][j].Animate("popup", Math.sqrt(j+i));
 }
 
 Tile.prototype.ResetDimensions = function(){

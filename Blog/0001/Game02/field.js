@@ -72,16 +72,10 @@ Field.prototype.GenerateField = function(fieldX, fieldY, w, h , tileSpace, borde
         this.tile[i] = [];
         for (var j = 0, l2 = fieldY; j < l2; j++) {
             this.tile[i][j] = new Tile(i*(w+tileSpace)+this.border, j*(h+tileSpace)+this.border, w, h, i, j, this);
-            //this.tile[i][j].Animate("popup", (i*j)/200);
-            //this.tile[i][j].Animate("popup", Math.sqrt(Math.sin(i*4)*Math.cos(j*4))*((i*j)/j)*Math.random());
-            //var h = 0.5 * Math.random()/20; //The smaller the bigger the circles
-            //var w = 0.5 * Math.random()/20;
-            //this.tile[i][j].Animate("popup", Math.sin(i*w)*Math.cos(j*h)*2);
-            var x = Math.abs(i - (fieldX/2));
-            var y = Math.abs(j - (fieldY/2));
-            this.tile[i][j].Animate("popup", Math.sqrt(Math.sin(x)*y/4));
         }
     }
+
+    this.Reset()
 }
 
 Field.prototype.GenerateBombs = function(amount, tile){
@@ -201,7 +195,26 @@ Field.prototype.Reset = function(){
     this.gameWon = false;
     for (var i = 0, l = this.fieldX; i < l; i++) {
         for (var j = 0, l2 = this.fieldY; j < l2; j++) {
-            this.tile[i][j].Reset();
+            this.tile[i][j].SetBomb(false);
+            this.tile[i][j].SetState(tileState.type.HIDDEN);
+            //this.tile[i][j].Animate("popup");
+            //this.tile[i][j].Animate("popup", (i+j)/90);
+            //this.tile[i][j].Animate("popup", (i*j)/this.total);
+            //this.tile[i][j].Animate("popup", Math.sqrt((i*j)/this.total));
+            //this.tile[i][j].Animate("popup", (i/(j+4))/2);
+            //this.tile[i][j].Animate("popup", Math.sqrt((i/(j+4))/2));
+            //this.tile[i][j].Animate("popup", (j/(i+4))/2);
+            //this.tile[i][j].Animate("popup", Math.sin((j*i)));
+            //this.tile[i][j].Animate("popup", Math.random()*0.8);
+            this.tile[i][j].Animate("popup", Math.sqrt(i+1 + Math.random()*10)*Math.sqrt(j+10)/20);
+
+            //Sideways random
+            //var h = 0.5 * Math.random()/20; //The smaller the bigger the circles
+            //var w = 0.5 * Math.random()/20;
+            //this.tile[i][j].Animate("popup", Math.sin(i*w)*Math.cos(j*h)*2);
+
+            //math sqrt makes it go slow to fast
+            //this.tile[i][j].Animate("popup", Math.sqrt(j+i));
         }
     }
 }
