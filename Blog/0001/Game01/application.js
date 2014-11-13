@@ -12,7 +12,7 @@ var Application = (function() {
     //===================================
     // VARIABLES
     //===================================
-    var canvas = document.getElementById("game");
+    var canvas = document.getElementById("game01");
     canvas.oncontextmenu = function (e) {
         e.preventDefault();
     };
