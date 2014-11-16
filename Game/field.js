@@ -1,7 +1,6 @@
 'use strict'
 var Field = function(fieldX,fieldY, tileWidth, tileHeight, tileSpace, difficulty, borderW, borderH){
-    console.log('field created');
-
+    //console.log('field created');
     //===================================
     // VARIABLES
     //===================================
@@ -145,6 +144,20 @@ Field.prototype.FlagTile = function(tile){
         tile.SetState(tileState.type.HIDDEN);
         tile.Animate("popinpopupver");
     }
+
+    this.CheckColorFont();
+}
+
+Field.prototype.CheckColorFont = function(){
+    for (var i = 0, l = this.fieldX; i < l; i++) {
+        for (var j = 0, l2 = this.fieldY; j < l2; j++) {
+            if(this.CalculateSurroundingTileForGuessed(this.tile[i][j])){
+                this.tile[i][j].TransitionColorFont({r:110,g:110,b:110},3.0)
+            }else{
+                this.tile[i][j].TransitionColorFont("original",0.2)
+            }
+        }
+    }
 }
 
 Field.prototype.ShowTile = function(tile, automatic){
@@ -188,10 +201,11 @@ Field.prototype.ShowTile = function(tile, automatic){
             this.isbeingrevealed = true;
             if (this.framePercentage >= 0.6){
                 this.SetState(tileState.type.SHOWN);
-                this.TransitionColorFont({r:0,g:0,b:0},2);
             }
         });
     }
+
+    this.CheckColorFont();
 }
 
 Field.prototype.RevealSurrounding = function(tile){
@@ -255,6 +269,54 @@ Field.prototype.CalculateSurroundingTile = function(tile){
     return surrounding;
 }
 
+Field.prototype.CalculateSurroundingTileForGuessed = function(tile){
+    var x = tile.GetNX();
+    var y = tile.GetNY();
+
+    if (x != 0)
+        if (this.tile[x-1][y].GetState() === tileState.type.HIDDEN) return false; //left
+    if (x < this.fieldX-1)
+        if (this.tile[x+1][y].GetState() === tileState.type.HIDDEN) return false; //right
+    if (y != 0)
+        if (this.tile[x][y-1].GetState() === tileState.type.HIDDEN) return false; //up
+    if (y < this.fieldY-1)
+        if (this.tile[x][y+1].GetState() === tileState.type.HIDDEN) return false; //down
+
+    if (x != 0 && y != 0)
+        if (this.tile[x-1][y - 1].GetState() === tileState.type.HIDDEN) return false; //left up
+    if (x < this.fieldX-1 && y != 0)
+        if (this.tile[x+1][y - 1].GetState() === tileState.type.HIDDEN) return false; //right up
+    if (y < this.fieldY-1 && x != 0)
+        if (this.tile[x - 1][y+1].GetState() === tileState.type.HIDDEN) return false; //left down
+    if (y < this.fieldY-1 && x < this.fieldX - 1)
+        if (this.tile[x + 1][y+1].GetState() === tileState.type.HIDDEN) return false; //right down
+
+    return true;
+}
+
+Field.prototype.IterateOverSurroundingTiles = function(tile, func){
+    var x = tile.GetNX();
+    var y = tile.GetNY();
+
+    if (x != 0)
+        func(this.tile[x-1][y]);
+    if (x < this.fieldX-1)
+        func(this.tile[x+1][y]);
+    if (y != 0)
+        func(this.tile[x][y-1]);
+    if (y < this.fieldY-1)
+        func(this.tile[x][y+1]);
+
+    if (x != 0 && y != 0)
+        func(this.tile[x-1][y - 1]);
+    if (x < this.fieldX-1 && y != 0)
+        func(this.tile[x+1][y - 1]);
+    if (y < this.fieldY-1 && x != 0)
+        func(this.tile[x - 1][y+1]);
+    if (y < this.fieldY-1 && x < this.fieldX - 1)
+        func(this.tile[x + 1][y+1]);
+}
+
 Field.prototype.Reset = function(){
     this.fieldClickable = false;
     this.firstClick = false;
@@ -290,7 +352,9 @@ Field.prototype.IsGameWon = function(){
 
     for (var i = 0, l = this.fieldX; i < l; i++) {
         for (var j = 0, l2 = this.fieldY; j < l2; j++) {
-            if (this.tile[i][j].GetBomb() === false && this.tile[i][j].GetState() === tileState.type.HIDDEN)
+            var t = this.tile[i][j];
+            if ((t.GetBomb() === false && t.GetState() === tileState.type.HIDDEN) ||
+                (t.GetState() === tileState.type.FLAGGED && t.GetBomb() === false))
                 return false;
         }
     }

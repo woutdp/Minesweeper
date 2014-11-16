@@ -57,6 +57,7 @@ function Interpolate(p, a, b){
 var invalid = true;   // component requires redrawing ?
 function Invalidate() {
     invalid = true;   // call this whenever the component state changes
+    //console.log("Invalidate")
 }
 
 var tileState = {};

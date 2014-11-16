@@ -13,8 +13,8 @@ var Application = (function() {
             // 7 = Sergeant
             // 10 = Soldier
             // 15 = Recruit
-            BORDERW = FIELDX*1.0,
-            BORDERH = FIELDX*1.0;
+            BORDERW = 20,
+            BORDERH = BORDERW;
 
     //===================================
     // VARIABLES
@@ -36,6 +36,7 @@ var Application = (function() {
     canvas.onmousedown = function(e){
         e.preventDefault();
     };
+
     //===================================
     // INPUT
     //===================================
@@ -43,19 +44,16 @@ var Application = (function() {
     canvas.addEventListener("mousemove", MouseOver, false)
     canvas.addEventListener("mousedown", MouseDown, false)
     function MouseUp(event){
-        Invalidate();
         mouseDown = false;
         field.MouseUp(event);
     }
     function MouseOver(event){
-        Invalidate();
         if (mouseDown){
             field.MouseDown(event);
         }
         field.MouseOver(event);
     }
     function MouseDown(event){
-        Invalidate();
         mouseDown = true;
         field.MouseDown(event);
     }
@@ -104,7 +102,7 @@ var Application = (function() {
       canvas.width = width;
       canvas.height = height;
       return canvas;
-}
+    }
     //===================================
     // OTHER FUNCTIONS
     //===================================
@@ -113,5 +111,5 @@ var Application = (function() {
         canvas.height = height;
     }
 
-    Game.run({update: Update, render : Render});
+    Game.run({update: Update, render: Render});
 })();

@@ -1,7 +1,7 @@
 'use strict'
 
 var Tile = function(x, y, w, h, nx, ny, parent){
-    console.log('tile created');
+    //console.log('tile created');
     //===================================
     // VARIABLES
     //===================================
@@ -35,86 +35,17 @@ var Tile = function(x, y, w, h, nx, ny, parent){
     this.conditionalfunction = function(){};
 
     //Font color stuff
-    this.fontcolor = {r:200,g:200,b:200};
+    this.defaultfontcolor = {r:222,g:222,b:222};
+    this.fontcolor = this.defaultfontcolor;
     this.startcolor = "";
     this.endcolor = "";
     this.fontFramePercentage = 0.0;
+    this.gototime = -1;
     this.fontcounter = 0.0;
+    this.fontcolordelay = 0.0;
 }
 
 Tile.prototype.Update = function(dt){
-    var s = tileState.type;
-    this.text = "";
-    switch(this.state) {
-        case s.SHOWN:
-            if (this.bomb){
-                this.color = tileColors["ShownBomb"];
-                this.text = "";
-            }
-            else{
-                //not a bomb
-                this.color = tileColors["ShownNormal"];
-                if (this.surrounding != 0)
-                    this.text = "" + this.surrounding;
-            }
-            break;
-        case s.HIDDEN:
-                this.color = tileColors["HiddenNormal"];
-            break;
-        case s.FLAGGED:
-            this.color = tileColors["FlaggedNormal"];
-            break;
-        default:
-        alert("A tile is not in a valid state")
-    }
-
-    //Adjust colors for Hidden states
-    if (this.state === s.HIDDEN){
-        // if the mouse is hovering over the tile
-        if (this.mouseState === tileMouseState.type.NONE){
-            this.color = tileColors["HiddenNormal"];
-            //this.Animate("hold");
-            //this.ResetDimensions();
-        }
-
-        if (this.mouseState === tileMouseState.type.HOVER){
-            this.color = tileColors["HiddenHover"];
-            //this.Animate("spread");
-        }
-
-        // if the mouse is selecting (clicking on the tile) over the tile
-        if(this.mouseState === tileMouseState.type.SELECTED){
-            this.color = tileColors["HiddenSelectedLeftclick"]
-        }
-
-        if(this.mouseState === tileMouseState.type.RIGHTSELECTED){
-            this.color = tileColors["HiddenSelectedRightclick"]
-        }
-    }
-
-    //Adjust colors for flagged states
-    if (this.state === s.FLAGGED){
-        // if the mouse is hovering over the tile
-        if (this.mouseState === tileMouseState.type.NONE){
-            this.color = tileColors["FlaggedNormal"];
-            //this.Animate("hold");
-            //this.ResetDimensions();
-        }
-
-        if (this.mouseState === tileMouseState.type.HOVER){
-            this.color = tileColors["FlaggedHover"];
-            //this.Animate("spread");
-        }
-
-        if(this.mouseState === tileMouseState.type.SELECTED){
-            this.color = tileColors["FlaggedSelectedLeftclick"]
-        }
-
-        if(this.mouseState === tileMouseState.type.RIGHTSELECTED){
-            this.color = tileColors["FlaggedSelectedRightclick"]
-        }
-    }
-
     this.AnimationUpdate(dt);
     this.ColorFontUpdate(dt);
 }
@@ -122,17 +53,17 @@ Tile.prototype.Update = function(dt){
 Tile.prototype.Render = function(ctx){
     //console.log("Render")
     //Draw the rectangle
-    ctx.fillStyle = this.color;
+    this.SetFillStyle(ctx, this.color);
     ctx.fillRect(this.x, this.y, this.w, this.h);
 
     //Draw the text
-    ctx.fillStyle = "#FFFFFF";
     var fontSize = Math.min(this.w,this.h);
-    ctx.font = "600 " + fontSize + "px Arial";
+    this.SetFont(ctx, fontSize + "px Arial");
     ctx.textAlign="center";
-    ctx.fillStyle = String(this.fontcolor);
+    this.SetFillStyle(ctx,"rgb(" + this.fontcolor.r + "," + this.fontcolor.g + "," + this.fontcolor.b + ")");
     ctx.fillText(this.text,(this.x+(10*(this.w/this.ow))),this.y+(19*(this.h/this.oh)));
 }
+
 
 Tile.prototype.MouseUp = function(event){
     var rect = this.GetCollisionRect();
@@ -143,7 +74,7 @@ Tile.prototype.MouseUp = function(event){
         if (event.button === 2)
             this.parent.FlagTile(this);
 
-        this.mouseState  = tileMouseState.type.NONE;
+        this.SetMouseState(tileMouseState.type.NONE);
 
         //Check if the game is won
         if(this.parent.IsGameWon())
@@ -156,10 +87,10 @@ Tile.prototype.MouseOver = function(event){
     if (collides(rect,event.offsetX,event.offsetY)){
         if (this.mouseState != tileMouseState.type.SELECTED
         &&  this.mouseState != tileMouseState.type.RIGHTSELECTED){
-            this.mouseState  = tileMouseState.type.HOVER;
+            this.SetMouseState(tileMouseState.type.HOVER);
         }
     }else{
-        this.mouseState  = tileMouseState.type.NONE;
+        this.SetMouseState(tileMouseState.type.NONE);
     }
 }
 
@@ -167,11 +98,109 @@ Tile.prototype.MouseDown = function(event){
     var rect = this.GetCollisionRect();
     if (collides(rect,event.offsetX,event.offsetY)){
         if (event.button === 0)
-            this.mouseState  = tileMouseState.type.SELECTED;
+            this.SetMouseState(tileMouseState.type.SELECTED);
         if (event.button === 2)
-            this.mouseState  = tileMouseState.type.RIGHTSELECTED;
+            this.SetMouseState(tileMouseState.type.RIGHTSELECTED);
     }else{
-        this.mouseState  = tileMouseState.type.NONE;
+        this.SetMouseState(tileMouseState.type.NONE);
+    }
+}
+
+Tile.prototype.CorrectSquareColors = function(){
+    var s = tileState.type;
+    this.text = "";
+    switch(this.state) {
+        case s.SHOWN:
+            if (this.bomb){
+                this.SetColor(tileColors["ShownBomb"]);
+                this.text = "";
+            }
+            else{
+                //not a bomb
+                this.SetColor(tileColors["ShownNormal"]);
+                if (this.surrounding != 0)
+                    this.text = "" + this.surrounding;
+            }
+            break;
+        case s.HIDDEN:
+                this.SetColor(tileColors["HiddenNormal"]);
+            break;
+        case s.FLAGGED:
+            this.SetColor(tileColors["FlaggedNormal"]);
+            break;
+        default:
+        alert("A tile is not in a valid state")
+    }
+
+    //Adjust colors for Hidden states
+    if (this.state === s.HIDDEN){
+        // if the mouse is hovering over the tile
+        if (this.mouseState === tileMouseState.type.NONE){
+            this.SetColor(tileColors["HiddenNormal"]);
+        }
+
+        if (this.mouseState === tileMouseState.type.HOVER){
+            this.SetColor(tileColors["HiddenHover"]);
+        }
+
+        // if the mouse is selecting (clicking on the tile) over the tile
+        if(this.mouseState === tileMouseState.type.SELECTED){
+            this.SetColor(tileColors["HiddenSelectedLeftclick"]);
+        }
+
+        if(this.mouseState === tileMouseState.type.RIGHTSELECTED){
+            this.SetColor(tileColors["HiddenSelectedRightclick"]);
+        }
+    }
+
+    //Adjust colors for flagged states
+    if (this.state === s.FLAGGED){
+        // if the mouse is hovering over the tile
+        if (this.mouseState === tileMouseState.type.NONE){
+            this.SetColor(tileColors["FlaggedNormal"]);
+        }
+
+        if (this.mouseState === tileMouseState.type.HOVER){
+            this.SetColor(tileColors["FlaggedHover"]);
+        }
+
+        if(this.mouseState === tileMouseState.type.SELECTED){
+            this.SetColor(tileColors["FlaggedSelectedLeftclick"]);
+        }
+
+        if(this.mouseState === tileMouseState.type.RIGHTSELECTED){
+            this.SetColor(tileColors["FlaggedSelectedRightclick"]);
+        }
+    }
+}
+
+Tile.prototype.TransitionColorFont = function(color, transitionTime, delay){
+    if (color === "original") this.endcolor = this.defaultfontcolor;
+    else this.endcolor = color;
+
+    this.startcolor = this.fontcolor;
+    this.gototime = transitionTime;
+    this.fontcounter = 0;
+    this.fontcolordelay = delay || 0;
+}
+
+Tile.prototype.ColorFontUpdate = function(dt){
+    if (this.fontcolordelay > 0) this.fontcolordelay -= dt;
+
+    if (this.gototime >= 0 && this.fontcolordelay <= 0){
+        this.fontcounter += dt;
+        this.fontFramePercentage = this.fontcounter/this.gototime;
+
+        if (this.fontFramePercentage>=1){
+            this.fontcolor = this.endcolor;
+            this.gototime = -1;
+        }else{
+            var r = parseInt(Interpolate(this.fontFramePercentage,this.startcolor.r,this.endcolor.r));
+            var g = parseInt(Interpolate(this.fontFramePercentage,this.startcolor.g,this.endcolor.g));
+            var b = parseInt(Interpolate(this.fontFramePercentage,this.startcolor.b,this.endcolor.b));
+            this.fontcolor = {r:r,g:g,b:b};
+        }
+        Invalidate();
     }
 }
 
@@ -208,23 +237,6 @@ Tile.prototype.Animate = function(animation, delay, animTime, endFunction, condi
     }
 }
 
-Tile.prototype.TransitionColorFont = function(color, transitionTime){
-    this.startcolor = this.fontcolor;
-    this.endcolor = color;
-    this.gototime = transitionTime;
-    this.fontcounter = 0;
-}
-
-Tile.prototype.ColorFontUpdate = function(dt){
-    //this.fontcounter += dt;
-    //this.fontFramePercentage = this.fontcounter/this.gototime;
-
-    //Interpolate(this.fontFramePercentage,this.startcolor.r,this.endcolor.r);
-
-    //this.fontcolor = this.startcolor*this.endcolor;
-    //Invalidate();
-}
-
 Tile.prototype.AnimationUpdate = function(dt){
     //Animations
     if (this.animdelay > 0) this.animdelay -= dt;
@@ -233,6 +245,8 @@ Tile.prototype.AnimationUpdate = function(dt){
     if (this.animdelay <= 0)
         if (this.animation != "hold" && this.framePercentage > 1){
             this.endfunction();
+            this.ResetDimensions();
+            this.Animate("hold");
         }else{
             this.conditionalfunction();
             switch(this.animation) {
@@ -289,6 +303,7 @@ Tile.prototype.Reset = function(){
     this.SetBomb(false);
     this.SetState(tileState.type.HIDDEN);
     this.isbeingrevealed = false;
+    this.fontcolor = this.defaultfontcolor;
 }
 
 Tile.prototype.ResetDimensions = function(){
@@ -311,6 +326,25 @@ Tile.prototype.IsBeingRevealed = function(){
     return this.isbeingrevealed;
 }
 
+Tile.prototype.SetFont = function(ctx, font){
+    if (ctx.font != font){
+        ctx.font = "600 " + font;
+    }
+}
+
+Tile.prototype.SetColor = function(color){
+    if (this.color != color){
+        this.color = color;
+        Invalidate();
+    }
+}
+
+Tile.prototype.SetFillStyle = function(ctx, fillstyle){
+    if (ctx.fillStyle != fillstyle){
+        ctx.fillStyle = fillstyle;
+    }
+}
+
 Tile.prototype.GetBomb = function(){
     return this.bomb;
 }
@@ -320,7 +354,18 @@ Tile.prototype.SetBomb = function(val){
 }
 
 Tile.prototype.SetState = function(state){
-    this.state = state;
+    if (state != this.state){
+        this.state = state;
+        this.parent.CheckColorFont();
+        this.CorrectSquareColors();
+    }
+}
+
+Tile.prototype.SetMouseState = function(state){
+    if (state != this.mouseState){
+        this.mouseState = state;
+        this.CorrectSquareColors();
+    }
 }
 
 Tile.prototype.GetState = function(){
