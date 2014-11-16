@@ -4,16 +4,17 @@ var Application = (function() {
     // CONSTANTS
     //===================================
     var     FIELDX = 30,
-            FIELDY = 20, //max of 50 because of paint draw image?
+            FIELDY = parseInt(FIELDX/1.618), //max of 50 because of paint draw image?
             TILESIZE = 22,
-            TILESPACE = 2,
+            TILESPACE = 1.0,
             DIFFICULTY = 10, //a higher number means LESS bombs
             // 4 = Admiral
             // 5 = General
             // 7 = Sergeant
             // 10 = Soldier
             // 15 = Recruit
-            BORDER = 22;
+            BORDERW = FIELDX*1.0,
+            BORDERH = FIELDX*1.0;
 
     //===================================
     // VARIABLES
@@ -22,7 +23,7 @@ var Application = (function() {
     var resetButton = document.getElementById("resetButton");
     resetButton.addEventListener("click", ResetField);
     var ctx = canvas.getContext('2d');
-    var field = new Field(FIELDX, FIELDY, TILESIZE, TILESIZE, TILESPACE, DIFFICULTY, BORDER, this);
+    var field = new Field(FIELDX, FIELDY, TILESIZE, TILESIZE, TILESPACE, DIFFICULTY, BORDERW, BORDERH);
     var mouseDown = false;
 
     var cache   = null;   // cached off-screen canvas
@@ -32,6 +33,9 @@ var Application = (function() {
         e.preventDefault();
     };
 
+    canvas.onmousedown = function(e){
+        e.preventDefault();
+    };
     //===================================
     // INPUT
     //===================================

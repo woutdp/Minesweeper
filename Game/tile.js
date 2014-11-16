@@ -29,6 +29,17 @@ var Tile = function(x, y, w, h, nx, ny, parent){
     this.animcounter = 0.0;
     this.animtime = 0.0;
     this.animdelay = 0.0;
+    this.isbeingrevealed = false;
+    this.framePercentage = 0.0;
+    this.endfunction = function(){};
+    this.conditionalfunction = function(){};
+
+    //Font color stuff
+    this.fontcolor = {r:200,g:200,b:200};
+    this.startcolor = "";
+    this.endcolor = "";
+    this.fontFramePercentage = 0.0;
+    this.fontcounter = 0.0;
 }
 
 Tile.prototype.Update = function(dt){
@@ -104,65 +115,8 @@ Tile.prototype.Update = function(dt){
         }
     }
 
-    //Animations
-    if (this.animdelay > 0) this.animdelay -= dt;
-    if (this.animdelay <= 0)
-        switch(this.animation) {
-            case "hold":
-                //Do nothing
-                break;
-            case "popup":
-                var framePercentage = this.animcounter/this.animtime;
-
-                if (framePercentage > 1){
-                    this.Animate("hold");
-                    this.ResetDimensions();
-                }else{
-                    this.w = this.ow * framePercentage;
-                    this.h = this.oh * framePercentage;
-                    this.x = this.ox + (this.ow - this.w)/2
-                    this.y = this.oy + (this.oh - this.h)/2
-                    this.animcounter += dt;
-                    Invalidate();
-                }
-                break;
-            case "popinpopup":
-                var framePercentage = this.animcounter/this.animtime;
-
-                if (framePercentage >= 0.5){
-                    this.SetBomb(false);
-                    this.SetState(tileState.type.HIDDEN);
-                }
-
-                if (framePercentage > 1){
-                    this.Animate("hold");
-                    this.ResetDimensions();
-                }else{
-                    this.w = this.ow * Math.abs((framePercentage*2 - 1));
-                    this.h = this.oh * Math.abs((framePercentage*2 - 1));
-                    this.x = this.ox + (this.ow - this.w)/2
-                    this.y = this.oy + (this.oh - this.h)/2
-                    this.animcounter += dt;
-                    Invalidate();
-                }
-                break;
-            case "spread":
-                var framePercentage = this.animcounter/this.animtime;
-
-                if (framePercentage > 1){
-                    this.Animate("hold");
-                }else{
-                    this.w = this.ow + framePercentage*5;
-                    this.h = this.oh + framePercentage*5;
-                    this.x = this.ox + (this.ow - this.w)/2
-                    this.y = this.oy + (this.oh - this.h)/2
-                    this.animcounter += dt;
-                    Invalidate();
-                }
-                break;
-            default:
-            alert("Unknown animation")
-        }
+    this.AnimationUpdate(dt);
+    this.ColorFontUpdate(dt);
 }
 
 Tile.prototype.Render = function(ctx){
@@ -173,10 +127,11 @@ Tile.prototype.Render = function(ctx){
 
     //Draw the text
     ctx.fillStyle = "#FFFFFF";
-    var fontSize = parseInt((this.w+this.h)/2)
+    var fontSize = Math.min(this.w,this.h);
     ctx.font = "600 " + fontSize + "px Arial";
     ctx.textAlign="center";
-    ctx.fillText(this.text,(this.x-(13*(this.w/this.ow))+fontSize),this.y-(3*(this.h/this.oh))+fontSize);
+    ctx.fillStyle = String(this.fontcolor);
+    ctx.fillText(this.text,(this.x+(10*(this.w/this.ow))),this.y+(19*(this.h/this.oh)));
 }
 
 Tile.prototype.MouseUp = function(event){
@@ -187,6 +142,7 @@ Tile.prototype.MouseUp = function(event){
         }
         if (event.button === 2)
             this.parent.FlagTile(this);
+
         this.mouseState  = tileMouseState.type.NONE;
 
         //Check if the game is won
@@ -219,56 +175,120 @@ Tile.prototype.MouseDown = function(event){
     }
 }
 
-Tile.prototype.Animate = function(animation, delay){
+Tile.prototype.Animate = function(animation, delay, animTime, endFunction, conditionalFunction){
     this.animdelay = delay || 0;
+    this.endfunction = endFunction || function(){this.Animate("hold");};
+    this.conditionalfunction = conditionalFunction || function(){};
+    this.animtime = animTime || tileAnimation.animTime;
+    this.animation = animation;
+    this.animcounter = 0.0;
+
+    //Start values
     switch(animation) {
         case "hold":
-            this.animation = "hold";
             break;
         case "popup":
             this.w = 0;
             this.h = 0;
-            this.animcounter = 0.0;
-            this.animtime = 0.4;
-            this.animation = "popup";
             break;
         case "popinpopup":
-            this.ResetDimensions();
-            this.animcounter = 0.0;
-            this.animtime = 0.4;
-            this.animation = "popinpopup";
             break;
-        case "spread":
-            this.animcounter = 0.0;
-            this.animtime = 0.3;
-            this.animation = "spread";
+        case "popinpopuphor":
+            this.w = this.ow;
+            this.h = this.oh;
+            break;
+        case "popinpopupver":
+            this.w = this.ow;
+            this.h = this.oh;
+            break;
+        case "popinpopupsin":
             break;
         default:
         alert("Unknown animation")
     }
 }
 
+Tile.prototype.TransitionColorFont = function(color, transitionTime){
+    this.startcolor = this.fontcolor;
+    this.endcolor = color;
+    this.gototime = transitionTime;
+    this.fontcounter = 0;
+}
+
+Tile.prototype.ColorFontUpdate = function(dt){
+    //this.fontcounter += dt;
+    //this.fontFramePercentage = this.fontcounter/this.gototime;
+
+    //Interpolate(this.fontFramePercentage,this.startcolor.r,this.endcolor.r);
+
+    //this.fontcolor = this.startcolor*this.endcolor;
+    //Invalidate();
+}
+
+Tile.prototype.AnimationUpdate = function(dt){
+    //Animations
+    if (this.animdelay > 0) this.animdelay -= dt;
+    this.framePercentage = this.animcounter/this.animtime;
+
+    if (this.animdelay <= 0)
+        if (this.animation != "hold" && this.framePercentage > 1){
+            this.endfunction();
+        }else{
+            this.conditionalfunction();
+            switch(this.animation) {
+                case "hold":
+                    //Do nothing
+                    break;
+                case "popup":
+                    this.w = this.ow * this.framePercentage;
+                    this.h = this.oh * this.framePercentage;
+                    this.x = this.ox + (this.ow - this.w)/2
+                    this.y = this.oy + (this.oh - this.h)/2
+                    this.animcounter += dt;
+                    Invalidate();
+                    break;
+                case "popinpopup":
+                    this.w = this.ow * Math.abs((this.framePercentage*2 - 1));
+                    this.h = this.oh * Math.abs((this.framePercentage*2 - 1));
+                    this.x = this.ox + (this.ow - this.w)/2
+                    this.y = this.oy + (this.oh - this.h)/2
+                    this.animcounter += dt;
+                    Invalidate();
+                    break;
+                case "popinpopuphor":
+                    this.w = this.ow * Math.abs((this.framePercentage*2 - 1));
+                    //this.h = this.oh * Math.abs((this.framePercentage*2 - 1));
+                    this.x = this.ox + (this.ow - this.w)/2
+                    this.y = this.oy + (this.oh - this.h)/2
+                    this.animcounter += dt;
+                    Invalidate();
+                    break;
+                case "popinpopupver":
+                    //this.w = this.ow * Math.abs((this.framePercentage*2 - 1));
+                    this.h = this.oh * Math.abs((this.framePercentage*2 - 1));
+                    this.x = this.ox + (this.ow - this.w)/2
+                    this.y = this.oy + (this.oh - this.h)/2
+                    this.animcounter += dt;
+                    Invalidate();
+                    break;
+                case "popinpopupsin":
+                    this.w = this.ow * Math.sin(Math.PI*Math.abs((this.framePercentage*2 - 1))/2);
+                    this.h = this.oh * Math.sin(Math.PI*Math.abs((this.framePercentage*2 - 1))/2);
+                    this.x = this.ox + (this.ow - this.w)/2
+                    this.y = this.oy + (this.oh - this.h)/2
+                    this.animcounter += dt;
+                    Invalidate();
+                    break;
+                default:
+                alert("Unknown animation")
+            }
+        }
+}
+
 Tile.prototype.Reset = function(){
-    //this.tile[i][j].Animate("popinpopup");
-    //this.tile[i][j].Animate("popup", (i+j)/90);
-    //this.tile[i][j].Animate("popup", (i*j)/this.total);
-    //this.tile[i][j].Animate("popup", Math.sqrt((i*j)/this.total));
-    //this.tile[i][j].Animate("popup", (i/(j+4))/2);
-    //this.tile[i][j].Animate("popup", Math.sqrt((i/(j+4))/2));
-    //this.tile[i][j].Animate("popup", (j/(i+4))/2);
-    //this.tile[i][j].Animate("popup", Math.sin((j*i)));
-    //this.tile[i][j].Animate("popup", Math.random()*0.8);
-
-    //I like this one
-    this.Animate("popinpopup", Math.sqrt(this.nx+1 + Math.random()*10)*Math.sqrt(this.ny+10)/20);
-
-    //Sideways random
-    //var h = 0.5 * Math.random()/20; //The smaller the bigger the circles
-    //var w = 0.5 * Math.random()/20;
-    //this.tile[i][j].Animate("popup", Math.sin(i*w)*Math.cos(j*h)*2);
-
-    //math sqrt makes it go slow to fast
-    //this.tile[i][j].Animate("popup", Math.sqrt(j+i));
+    this.SetBomb(false);
+    this.SetState(tileState.type.HIDDEN);
+    this.isbeingrevealed = false;
 }
 
 Tile.prototype.ResetDimensions = function(){
@@ -281,6 +301,14 @@ Tile.prototype.ResetDimensions = function(){
 
 Tile.prototype.GetCollisionRect = function(){
     return {x: this.ox, y: this.oy, w: this.ow, h: this.oh}
+}
+
+Tile.prototype.GetAnimtime = function(){
+    return this.animtime;
+}
+
+Tile.prototype.IsBeingRevealed = function(){
+    return this.isbeingrevealed;
 }
 
 Tile.prototype.GetBomb = function(){
@@ -314,3 +342,21 @@ Tile.prototype.GetNX = function(){
 Tile.prototype.GetNY = function(){
     return this.ny;
 }
+
+//ANIMIDEAS
+    //this.tile[i][j].Animate("popinpopup");
+    //this.tile[i][j].Animate("popup", (i+j)/90);
+    //this.tile[i][j].Animate("popup", (i*j)/this.total);
+    //this.tile[i][j].Animate("popup", Math.sqrt((i*j)/this.total));
+    //this.tile[i][j].Animate("popup", (i/(j+4))/2);
+    //this.tile[i][j].Animate("popup", Math.sqrt((i/(j+4))/2));
+    //this.tile[i][j].Animate("popup", (j/(i+4))/2);
+    //this.tile[i][j].Animate("popup", Math.sin((j*i)));
+    //this.tile[i][j].Animate("popup", Math.random()*0.8);
+    //Sideways random
+    //var h = 0.5 * Math.random()/20; //The smaller the bigger the circles
+    //var w = 0.5 * Math.random()/20;
+    //this.tile[i][j].Animate("popup", Math.sin(i*w)*Math.cos(j*h)*2);
+
+    //math sqrt makes it go slow to fast
+    //this.tile[i][j].Animate("popup", Math.sqrt(j+i));

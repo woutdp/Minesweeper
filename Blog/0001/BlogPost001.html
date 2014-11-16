@@ -128,7 +128,7 @@ requestAnimationFrame(Frame);
 &lt;/html&gt;
         </code>
     </pre>
-    <h2>Generating a field</h2>
+<h2>Generating a field</h2>
     <p>Next up I want to generate a field of tiles. It doesn't have to look pretty yet, it just has to work. I probably will start using some objects. I will need a tile object, and a field object that is basically a 2D array of tile objects.</p>
     <img src="Minefield.png" alt="MineField">
     <p>I Added a lot of code to the project and changed some stuff around to make it more clean. The html file basically stayed the same except for some includes. The gameloop currently looks like this.</p>
@@ -281,7 +281,7 @@ Tile.prototype.Render = function(ctx){
 }
     </code>
     </pre>
-    <h2>Handling input and generating tiles</h2>
+<h2>Handling input and generating tiles</h2>
     <p>There is still no way to interact with the game. Time to add input. I will make tiles clickable, when a tile is clicked I want them to change color.</p>
     <img src="Clickfield.png" alt="Click field">
     <p>From now on out I will show less code and more pictures of my progress. If you want to see how I did this then you can check the source code.</p>
@@ -378,11 +378,11 @@ Field.prototype.RevealSurrounding = function(tile){
         this.ShowTile(this.tile[x+1][y+1]);
 }
     </code></pre>
-    <h2>Flagging</h2>
+<h2>Flagging</h2>
     <p>It's already starting to look a lot like Minesweeper! But one thing that is annoying  me is not being able to tag mines. So let's make it so right clicking on a tile changes its color and locks it from showing.</p>
     <img src="FlaggedTiles.png" alt="Flagged tiles">
     <p>Much better. The black tiles are flagged tiles and aren't clickable. Now all we have to do is implement some game over function whenever we click on a non tagged tile that is a bomb. For now the GameOver function will just reveal the entire board.</p>
-    <h2>Prettifying</h2>
+<h2>Prettifying</h2>
     <p>After playing the game for a bit everything seems to be working fine! Let's prettify it a bit. First I'll give the flagged rectangles a better colour, also it's probably a good idea to make the background a nice colour and give the rects a smooth corner. Let's see how it looks.</p>
     <div style="width: auto; height: auto; display:inline-block; margin: 0 170px;">
         <img src="RoundedCornersField.png" style="float: left" alt="Rounded tiles">
@@ -420,9 +420,13 @@ Field.prototype.RevealSurrounding = function(tile){
     <script src="Game02/FPSMeter.js"></script>
     <script src="Game02/game.js"></script>
     <script src="Game02/application.js"></script>
-    <p>Looks flipping great.</p>
+    <p>Looks fantastic. The game is coming alive.</p>
     <p>This is very fun, I'm going to expand the animations.</p>
-    <p>After experimenting a bit with animations, it has come to my attention that fonts don't like to get scaled. When making them smaller, they appear wobbly. It's very important that they appear normal.</p>
+    <p>After experimenting a bit with animations, it has come to my attention that fonts don't like to get scaled. When making them smaller, they appear wobbly. After testing on another pc the bug disappeared. This must be some option in chrome. I'll leave it for now. Let's make the animations more adaptable in code.</p>
+    <p>When a field of empty tiles is revealed, they now get revealed in an explosive pattern. Also when clicking on a tile, the tile has an animation.</p>
+    <p>After making some design iterations the game looks like this</p>
+    <img src="TealGame.png" alt="Teal Game">
+    <p>I'm not sure if I like the outer border and inner borders. It's probably a bit too fat, while the inner ones are too thin. I like the new colors and the fatter font. Also you can't see it now but the game plays much more fluid and feels nicer. You'll be able to play it later in a new chapter.</p>
 </div>
 </body>
 </html>

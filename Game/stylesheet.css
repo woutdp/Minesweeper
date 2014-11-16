@@ -2,8 +2,32 @@
     margin: 0px;
 }
 
+body{
+    background-color: #ffffff;
+    font-family: "Clear Sans", "Helvetica Neue", Arial, sans-serif;
+    font-size: 18pt;
+}
+
 #gameContainer  {
     padding:10px;
     margin-left: auto;
     margin-right: auto;
+}
+
+#resetButton {
+  /*
+  color: #f9f6f2;
+  height: 40px;
+  line-height: 42px;
+  */
+
+  display: block;
+  padding: 10px;
+  height: 40px;
+
+  margin-left:auto;
+  margin-right:auto;
+  margin-bottom: 5px;
+  text-align: center;
+  cursor: pointer;
 }

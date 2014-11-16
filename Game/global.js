@@ -50,6 +50,10 @@ function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
     }
 }
 
+function Interpolate(p, a, b){
+    return (1-p)*a + p*b;
+}
+
 var invalid = true;   // component requires redrawing ?
 function Invalidate() {
     invalid = true;   // call this whenever the component state changes
@@ -62,13 +66,17 @@ var tileMouseState = {};
 tileMouseState.type = new Enum("NONE", "HOVER", "SELECTED", "RIGHTSELECTED");
 
 var tileColors = {};
-tileColors["ShownNormal"]               = "#5045F4";
+tileColors["ShownNormal"]               = "#5F5F5F";
 tileColors["ShownBomb"]                 = "#FF5555";
-tileColors["HiddenNormal"]              = "#40ABFF";
-tileColors["HiddenHover"]               = "#50BBFF";
-tileColors["HiddenSelectedLeftclick"]   = "#5045F9";
-tileColors["HiddenSelectedRightclick"]  = "#8D838F";
-tileColors["FlaggedNormal"]             = "#BDA34F";
+tileColors["HiddenNormal"]              = "#29CBBA";
+tileColors["HiddenHover"]               = "#F9CC74";
+tileColors["HiddenSelectedLeftclick"]   = "#35373e";
+tileColors["HiddenSelectedRightclick"]  = "#DDD3DF";
+tileColors["FlaggedNormal"]             = "#FF6C00";
 tileColors["FlaggedHover"]              = "#CDB35F";
 tileColors["FlaggedSelectedLeftclick"]  = "#BDA34F";
-tileColors["FlaggedSelectedRightclick"] = "#DDD3DF";
+tileColors["FlaggedSelectedRightclick"] = "#FDF3FF";
+
+var tileAnimation = {
+    animTime : 0.3
+};
