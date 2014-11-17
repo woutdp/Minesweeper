@@ -8,9 +8,22 @@
 ?>
 </head>
 <body>
-    <div id="gameContainer">
-        <button type="button" id="resetButton">Reset</button>
-        <canvas id="game" style="display:block; margin: auto; border:0px solid #000010;"> Canvas element not supported </canvas>
+    <div id="container">
+        <div id="buttonContainer">
+            <button type="button" id="resetButton">New Game</button>
+            <button type="button" id="resizeButton">Resize</button>
+        </div>
+        <div id="gameContainer">
+            <canvas id="game"> Canvas element not supported </canvas>
+            <div id="gameMenu">
+            <p>Resizing will reset the game</p>
+            <button type="button" id="resizeButton">Small</button>
+            <button type="button" id="resizeButton">Normal</button>
+            <button type="button" id="resizeButton">Big</button>
+            <button type="button" id="resizeButton">Huge</button>
+            <button type="button" id="resetButton">Resume Game</button>
+            <div>
+        </div>
     </div>
     <script src="global.js"></script>
     <script src="tile.js"></script>
@@ -18,5 +31,10 @@
     <script src="FPSMeter.js"></script>
     <script src="game.js"></script>
     <script src="application.js"></script>
+    <script type="text/javascript">
+        var c = document.getElementById("game");
+        var gameContainer = document.getElementById("gameContainer");
+        //gameContainer.setAttribute("style", "width=" + c.width + "px");
+    </script>
 </body>
 </html>

@@ -109,7 +109,7 @@ Field.prototype.GenerateShowing = function(){
             var y = Math.abs(j - (this.fieldX/2));
             //this.tile[i][j].Animate("popup", (Math.sqrt(Math.cos(x*3)*y/10)),0.2);
             //this.tile[i][j].Animate("popup", Math.sqrt(Math.cos(x*3)*y/10), function(){console.log("yo, I'm done");});
-            this.tile[i][j].Animate("popup", (((Math.cos(x*w*5)+1.5))/((Math.sin(x*h*5)+1.5))/10)+0.2);
+            this.tile[i][j].Animate("popup", (((Math.cos(x*w*3)+1.5))/((Math.sin(x*h*5)+1.5))/10)+0.2);
         }
     }
 }
@@ -145,17 +145,27 @@ Field.prototype.FlagTile = function(tile){
         tile.Animate("popinpopupver");
     }
 
-    this.CheckColorFont();
+    this.CheckColorFont(tile);
 }
 
-Field.prototype.CheckColorFont = function(){
-    for (var i = 0, l = this.fieldX; i < l; i++) {
-        for (var j = 0, l2 = this.fieldY; j < l2; j++) {
-            if(this.CalculateSurroundingTileForGuessed(this.tile[i][j])){
-                this.tile[i][j].TransitionColorFont({r:110,g:110,b:110},3.0)
+Field.prototype.CheckColorFont = function(tile){
+    var array = this.GetSurroundingTiles(tile);
+    var l = array.length;
+    for (var i = 0; i < l; ++i){
+        if(array[i].GetState() != tileState.type.HIDDEN){
+            if(this.CalculateSurroundingTileForGuessed(array[i])){
+                array[i].TransitionColorFont({r:110,g:110,b:110},3.0);
             }else{
-                this.tile[i][j].TransitionColorFont("original",0.2)
+                array[i].TransitionColorFont("original",0.2);
             }
+        }
+    }
+
+    if(tile.GetState() != tileState.type.HIDDEN){
+        if(this.CalculateSurroundingTileForGuessed(tile)){
+            tile.TransitionColorFont({r:110,g:110,b:110},3.0);
+        }else{
+            tile.TransitionColorFont("original",0.2);
         }
     }
 }
@@ -205,7 +215,7 @@ Field.prototype.ShowTile = function(tile, automatic){
         });
     }
 
-    this.CheckColorFont();
+    this.CheckColorFont(tile);
 }
 
 Field.prototype.RevealSurrounding = function(tile){
@@ -294,27 +304,32 @@ Field.prototype.CalculateSurroundingTileForGuessed = function(tile){
     return true;
 }
 
-Field.prototype.IterateOverSurroundingTiles = function(tile, func){
+Field.prototype.GetSurroundingTiles = function(tile){
+    var array = [];
+    var it = 0;
+
     var x = tile.GetNX();
     var y = tile.GetNY();
 
     if (x != 0)
-        func(this.tile[x-1][y]);
+        array[it++] = this.tile[x-1][y];
     if (x < this.fieldX-1)
-        func(this.tile[x+1][y]);
+        array[it++] = this.tile[x+1][y];
     if (y != 0)
-        func(this.tile[x][y-1]);
+        array[it++] = this.tile[x][y-1];
     if (y < this.fieldY-1)
-        func(this.tile[x][y+1]);
+        array[it++] = this.tile[x][y+1];
 
     if (x != 0 && y != 0)
-        func(this.tile[x-1][y - 1]);
+        array[it++] = this.tile[x-1][y - 1];
     if (x < this.fieldX-1 && y != 0)
-        func(this.tile[x+1][y - 1]);
+        array[it++] = this.tile[x+1][y - 1];
     if (y < this.fieldY-1 && x != 0)
-        func(this.tile[x - 1][y+1]);
+        array[it++] = this.tile[x - 1][y+1];
     if (y < this.fieldY-1 && x < this.fieldX - 1)
-        func(this.tile[x + 1][y+1]);
+        array[it++] = this.tile[x + 1][y+1];
+
+    return array;
 }
 
 Field.prototype.Reset = function(){
@@ -339,6 +354,11 @@ Field.prototype.Reset = function(){
         }
     }
     this.animationDuration = maxTime;
+}
+
+Field.prototype.Resize = function(x,y){
+    this.GenerateField(x,y, this.tileWidth,this.tileHeight,this.tileSpace, this.borderw, this.borderh);
+    this.Reset();
 }
 
 Field.prototype.GameOver = function(){

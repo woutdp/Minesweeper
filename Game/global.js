@@ -68,12 +68,12 @@ tileMouseState.type = new Enum("NONE", "HOVER", "SELECTED", "RIGHTSELECTED");
 
 var tileColors = {};
 tileColors["ShownNormal"]               = "#5F5F5F";
-tileColors["ShownBomb"]                 = "#FF5555";
-tileColors["HiddenNormal"]              = "#29CBBA";
+tileColors["ShownBomb"]                 = "#EE5555";
+tileColors["HiddenNormal"]              = "#25C8B7";
 tileColors["HiddenHover"]               = "#F9CC74";
 tileColors["HiddenSelectedLeftclick"]   = "#35373e";
 tileColors["HiddenSelectedRightclick"]  = "#DDD3DF";
-tileColors["FlaggedNormal"]             = "#FF6C00";
+tileColors["FlaggedNormal"]             = "#EF6C00";
 tileColors["FlaggedHover"]              = "#CDB35F";
 tileColors["FlaggedSelectedLeftclick"]  = "#BDA34F";
 tileColors["FlaggedSelectedRightclick"] = "#FDF3FF";

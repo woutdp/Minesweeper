@@ -3,7 +3,7 @@ var Application = (function() {
     //===================================
     // CONSTANTS
     //===================================
-    var     FIELDX = 30,
+    var     FIELDX = 35,
             FIELDY = parseInt(FIELDX/1.618), //max of 50 because of paint draw image?
             TILESIZE = 22,
             TILESPACE = 1.0,
@@ -20,9 +20,16 @@ var Application = (function() {
     // VARIABLES
     //===================================
     var canvas = document.getElementById("game");
+    var gameContainer = document.getElementById("gameContainer");
+    var gameMenu = document.getElementById("gameMenu");
+    var container = document.getElementById("container");
+    var ctx = canvas.getContext('2d');
+
     var resetButton = document.getElementById("resetButton");
     resetButton.addEventListener("click", ResetField);
-    var ctx = canvas.getContext('2d');
+    var resizeButton = document.getElementById("resizeButton");
+    resizeButton.addEventListener("click", ResizeField);
+
     var field = new Field(FIELDX, FIELDY, TILESIZE, TILESIZE, TILESPACE, DIFFICULTY, BORDERW, BORDERH);
     var mouseDown = false;
 
@@ -65,8 +72,14 @@ var Application = (function() {
         //Resize the canvas if the field has a different size
         var width = field.GetWidth()
         var height = field.GetHeight()
-        if (width !== canvas.width)
-            Resize(width, height)
+        if (width != canvas.width || height != canvas.height)
+            ResizeCanvas(width, height)
+
+        if (gameContainer.offsetHeight != canvas.height || gameContainer.offsetWidth != canvas.width){
+            gameContainer.setAttribute("style","height:"+ canvas.height+"px;" + "width:"+ canvas.width+"px;");
+            gameMenu.setAttribute("style","height:"+ (canvas.height-BORDERH*2-40)+"px;" + "width:"+ (canvas.width-BORDERW*2-40)+"px;");
+            container.setAttribute("style","width:"+ canvas.width+"px;");
+        }
 
         //Object updates
         field.Update(dt, this);
@@ -81,7 +94,7 @@ var Application = (function() {
     }
 
     function ActualRender(ctx) {
-        canvas.width = canvas.width; // This clears the canvas
+        ///canvas.width = canvas.width; // This clears the canvas
 
         field.Render(ctx);
     }
@@ -89,6 +102,14 @@ var Application = (function() {
     function ResetField() {
         Invalidate();
         field.Reset();
+    }
+
+    function ResizeField() {
+        Invalidate();
+        gameMenu.style.zIndex = 2;
+        gameMenu.style.color = "rgb(90,90,90)";
+        gameMenu.style.background = "rgba(255,255,255,0.6)";
+        //field.Resize(FIELDX,FIELDY);
     }
 
     function renderToCanvas(width, height, render, canvas) {
@@ -106,7 +127,7 @@ var Application = (function() {
     //===================================
     // OTHER FUNCTIONS
     //===================================
-    function Resize(width, height){
+    function ResizeCanvas(width, height){
         canvas.width = width;
         canvas.height = height;
     }

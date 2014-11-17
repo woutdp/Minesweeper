@@ -427,7 +427,6 @@ Field.prototype.RevealSurrounding = function(tile){
     <p>After making some design iterations the game looks like this</p>
     <img src="TealGame.png" alt="Teal Game">
     <p>I'm not sure if I like the outer border and inner borders. It's probably a bit too fat, while the inner ones are too thin. I like the new colors and the fatter font. Also you can't see it now but the game plays much more fluid and feels nicer. You'll be able to play it later in a new chapter.</p>
-    <p>I don't like how the game gives an equal focus on solved parts and yet to be solved parts. So let's add something to the game that will do that for me. I thought about it and fading the fonts of solved parts seems like a nice solution.</p>
 </div>
 </body>
 </html>
