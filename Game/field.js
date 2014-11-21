@@ -36,9 +36,12 @@ Field.prototype.Update = function(dt){
 Field.prototype.Render = function(ctx){
     //Fill in the background with a rounded rectangle
     //roundRect(ctx,0,0,this.GetWidth(),this.GetHeight(), 20, true, false);
-    ctx.fillStyle = "#3F3F3F";
-    roundRect(ctx,0,0,this.GetWidth(),this.GetHeight(),20, true, false);
+    ctx.fillStyle = "#444549";
+    //roundRect(ctx,0,0,this.GetWidth(),this.GetHeight(),4, true, false);
     ctx.fill();
+    ctx.fillStyle = "#444549";
+    var extraB = 0;
+    ctx.fillRect(this.borderw-extraB,this.borderh-extraB,this.GetWidth()-this.borderw*2+extraB*2,this.GetHeight()-this.borderh*2+extraB*2+5);
 
     for (var i = 0, l = this.fieldX; i < l; i++) {
         for (var j = 0, l2 = this.fieldY; j < l2; j++) {
@@ -154,7 +157,7 @@ Field.prototype.CheckColorFont = function(tile){
     for (var i = 0; i < l; ++i){
         if(array[i].GetState() != tileState.type.HIDDEN){
             if(this.CalculateSurroundingTileForGuessed(array[i])){
-                array[i].TransitionColorFont({r:110,g:110,b:110},3.0);
+                array[i].TransitionColorFont({r:122,g:122,b:122},3.0);
             }else{
                 array[i].TransitionColorFont("original",0.2);
             }
@@ -163,7 +166,7 @@ Field.prototype.CheckColorFont = function(tile){
 
     if(tile.GetState() != tileState.type.HIDDEN){
         if(this.CalculateSurroundingTileForGuessed(tile)){
-            tile.TransitionColorFont({r:110,g:110,b:110},3.0);
+            tile.TransitionColorFont({r:122,g:122,b:122},3.0);
         }else{
             tile.TransitionColorFont("original",0.2);
         }

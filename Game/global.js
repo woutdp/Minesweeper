@@ -50,6 +50,25 @@ function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
     }
 }
 
+function ColorLuminance(hex, lum) {
+    // validate hex string
+    hex = String(hex).replace(/[^0-9a-f]/gi, '');
+    if (hex.length < 6) {
+        hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+    }
+    lum = lum || 0;
+
+    // convert to decimal and change luminosity
+    var rgb = "#", c, i;
+    for (i = 0; i < 3; i++) {
+        c = parseInt(hex.substr(i*2,2), 16);
+        c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
+        rgb += ("00"+c).substr(c.length);
+    }
+
+    return rgb;
+}
+
 function Interpolate(p, a, b){
     return (1-p)*a + p*b;
 }
@@ -67,13 +86,13 @@ var tileMouseState = {};
 tileMouseState.type = new Enum("NONE", "HOVER", "SELECTED", "RIGHTSELECTED");
 
 var tileColors = {};
-tileColors["ShownNormal"]               = "#5F5F5F";
-tileColors["ShownBomb"]                 = "#EE5555";
-tileColors["HiddenNormal"]              = "#25C8B7";
-tileColors["HiddenHover"]               = "#F9CC74";
+tileColors["ShownNormal"]               = "#65666B";
+tileColors["ShownBomb"]                 = "#E76458";
+tileColors["HiddenNormal"]              = "#15E8D6";
+tileColors["HiddenHover"]               = "#FFDE4A";
 tileColors["HiddenSelectedLeftclick"]   = "#35373e";
 tileColors["HiddenSelectedRightclick"]  = "#DDD3DF";
-tileColors["FlaggedNormal"]             = "#EF6C00";
+tileColors["FlaggedNormal"]             = "#FB702D";
 tileColors["FlaggedHover"]              = "#CDB35F";
 tileColors["FlaggedSelectedLeftclick"]  = "#BDA34F";
 tileColors["FlaggedSelectedRightclick"] = "#FDF3FF";

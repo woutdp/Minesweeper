@@ -5,15 +5,15 @@ var Application = (function() {
     //===================================
     var     FIELDX = 35,
             FIELDY = parseInt(FIELDX/1.618), //max of 50 because of paint draw image?
-            TILESIZE = 22,
-            TILESPACE = 1.0,
+            TILESIZE = 26,
+            TILESPACE = 0.0,
             DIFFICULTY = 10, //a higher number means LESS bombs
             // 4 = Admiral
             // 5 = General
             // 7 = Sergeant
             // 10 = Soldier
             // 15 = Recruit
-            BORDERW = 20,
+            BORDERW = 5,
             BORDERH = BORDERW;
 
     //===================================

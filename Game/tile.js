@@ -35,7 +35,7 @@ var Tile = function(x, y, w, h, nx, ny, parent){
     this.conditionalfunction = function(){};
 
     //Font color stuff
-    this.defaultfontcolor = {r:222,g:222,b:222};
+    this.defaultfontcolor = {r:182,g:182,b:182};
     this.fontcolor = this.defaultfontcolor;
     this.startcolor = "";
     this.endcolor = "";
@@ -51,18 +51,28 @@ Tile.prototype.Update = function(dt){
 }
 
 Tile.prototype.Render = function(ctx){
-    //console.log("Render")
-    //Draw the rectangle
     this.SetFillStyle(ctx, this.color);
     ctx.fillRect(this.x, this.y, this.w, this.h);
+    this.SetFillStyle(ctx, ColorLuminance(this.color, 0.1));
+    ctx.fillRect(this.x, this.y, this.w, 1);
+    this.SetFillStyle(ctx, ColorLuminance(this.color, -0.1));
+    ctx.fillRect(this.x, this.y, 1, this.h);
+    ctx.fillRect(this.x+this.w-1, this.y, 1, this.h);
+    if (this.state === tileState.type.SHOWN){
+        this.SetFillStyle(ctx, ColorLuminance(this.color, -0.2));
+        ctx.fillRect(this.x, this.y+this.h-1, this.w, 1);
+    }else{
+        this.SetFillStyle(ctx, ColorLuminance(this.color, -0.2));
+        ctx.fillRect(this.x, this.y+this.h-2, this.w, 2);
+    }
 
     //Draw the text
     if (this.text != ""){
-        var fontSize = Math.min(this.w,this.h);
+        var fontSize = Math.min(this.w-2,this.h-2);
         this.SetFont(ctx, fontSize + "px Arial");
         ctx.textAlign="center";
         this.SetFillStyle(ctx,"rgb(" + this.fontcolor.r + "," + this.fontcolor.g + "," + this.fontcolor.b + ")");
-        ctx.fillText(this.text,(this.x+(10*(this.w/this.ow))),this.y+(19*(this.h/this.oh)));
+        ctx.fillText(this.text,(this.x+(12*(this.w/this.ow))),this.y+(21*(this.h/this.oh)));
     }
 }
 
@@ -306,7 +316,7 @@ Tile.prototype.ResetDimensions = function(){
 }
 
 Tile.prototype.GetCollisionRect = function(){
-    return {x: this.ox, y: this.oy, w: this.ow, h: this.oh}
+    return {x: this.ox+1, y: this.oy+1, w: this.ow-2, h: this.oh-2}
 }
 
 Tile.prototype.GetAnimtime = function(){
