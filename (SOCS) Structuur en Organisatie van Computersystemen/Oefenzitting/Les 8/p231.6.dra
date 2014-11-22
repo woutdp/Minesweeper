@@ -1,0 +1,21 @@
+MACRO
+    SOM van, tot
+    HIA.w R0, 0
+$beg: MVGL <van>, <tot>
+    MVSP GR, $end
+    OPT R0, R<van>
+    MEVA <van>, <van>+1
+    MSPR $beg
+$end: DRU
+MCREINDE
+
+HIA.w R1, 5
+HIA.w R2, 5
+HIA.w R3, 5
+HIA.w R4, 5
+SOM 1, 4
+STP
+
+RES:    RESGR 1
+A:      RESGR 1
+EINDPR
