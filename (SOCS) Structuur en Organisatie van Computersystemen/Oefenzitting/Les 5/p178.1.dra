@@ -47,21 +47,21 @@ mainWhileEnd:
         STP
 
 leesrationaal:
-        HIA R0, 0(R8)
+        HIA R1, 1(R8)
         LEZ
-        BIG R0, 0(R0)
+        BIG R0, 2(R1)
         LEZ
-        BIG R0, 1(R0)
+        BIG R0, 0(R1)
         LEZ
-        BIG R0, 2(R0)
+        BIG R0, 1(R1)
         KTG
 
 drukrationaal:
-        HIA R0, 0(R8)
-        DRU
         HIA R0, 1(R8)
         DRU
         HIA R0, 2(R8)
+        DRU
+        HIA R0, 3(R8)
         DRU
         NWL
         KTG
