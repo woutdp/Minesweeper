@@ -13,8 +13,8 @@ var Application = (function() {
             // 7 = Sergeant
             // 10 = Soldier
             // 15 = Recruit
-            BORDERW = 5,
-            BORDERH = BORDERW;
+            BORDERW = 0,
+            BORDERH = 5;
 
     //===================================
     // VARIABLES
@@ -77,7 +77,7 @@ var Application = (function() {
 
         if (gameContainer.offsetHeight != canvas.height || gameContainer.offsetWidth != canvas.width){
             gameContainer.setAttribute("style","height:"+ canvas.height+"px;" + "width:"+ canvas.width+"px;");
-            gameMenu.setAttribute("style","height:"+ (canvas.height-BORDERH*2-40)+"px;" + "width:"+ (canvas.width-BORDERW*2-40)+"px;");
+            gameMenu.setAttribute("style","height:"+ (canvas.height-BORDERH*2-40+5)+"px;" + "width:"+ (canvas.width-BORDERW*2-40)+"px;");
             container.setAttribute("style","width:"+ canvas.width+"px;");
         }
 

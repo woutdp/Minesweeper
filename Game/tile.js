@@ -51,20 +51,38 @@ Tile.prototype.Update = function(dt){
 }
 
 Tile.prototype.Render = function(ctx){
-    this.SetFillStyle(ctx, this.color);
-    ctx.fillRect(this.x, this.y, this.w, this.h);
-    this.SetFillStyle(ctx, ColorLuminance(this.color, 0.1));
-    ctx.fillRect(this.x, this.y, this.w, 1);
+    var s = parseInt(1);
+    var d = 2;
+    var u = 1;
+    var x = parseInt(this.x);
+    var y = parseInt(this.y);
+    var w = parseInt(this.w);
+    var h = parseInt(this.h);
+    var extraDown = 0;
+    var scale = Math.min(this.w,this.h)/this.ow;
+
+    if (this.ny+1 === this.parent.GetFieldY())
+        extraDown = 5*scale;
+
+    if (this.state === tileState.type.SHOWN)
+        d = 1;
+
+    //Sides
     this.SetFillStyle(ctx, ColorLuminance(this.color, -0.1));
-    ctx.fillRect(this.x, this.y, 1, this.h);
-    ctx.fillRect(this.x+this.w-1, this.y, 1, this.h);
-    if (this.state === tileState.type.SHOWN){
-        this.SetFillStyle(ctx, ColorLuminance(this.color, -0.2));
-        ctx.fillRect(this.x, this.y+this.h-1, this.w, 1);
-    }else{
-        this.SetFillStyle(ctx, ColorLuminance(this.color, -0.2));
-        ctx.fillRect(this.x, this.y+this.h-2, this.w, 2);
-    }
+    ctx.fillRect(x, y, w, h+extraDown);
+
+    //Upper
+    this.SetFillStyle(ctx, ColorLuminance(this.color, 0.1));
+    ctx.fillRect(x, y, w, u);
+
+    //Inner
+    this.SetFillStyle(ctx, this.color);
+    ctx.fillRect(x+s, y+u, Math.abs(parseInt(w-s*2)), h-u);
+
+    //Downer
+    this.SetFillStyle(ctx, ColorLuminance(this.color, -0.2));
+    var test = Math.abs(h-d);
+    ctx.fillRect(x, y+test, w, d+extraDown);
 
     //Draw the text
     if (this.text != ""){
@@ -75,7 +93,6 @@ Tile.prototype.Render = function(ctx){
         ctx.fillText(this.text,(this.x+(12*(this.w/this.ow))),this.y+(21*(this.h/this.oh)));
     }
 }
-
 
 Tile.prototype.MouseUp = function(event){
     var rect = this.GetCollisionRect();
@@ -234,7 +251,7 @@ Tile.prototype.Animate = function(animation, delay, animTime, endFunction, condi
         case "popinpopupsin":
             break;
         default:
-        alert("Unknown animation")
+            alert("Unknown animation");
     }
 }
 
@@ -295,7 +312,7 @@ Tile.prototype.AnimationUpdate = function(dt){
                     Invalidate();
                     break;
                 default:
-                alert("Unknown animation")
+                    alert("Unknown animation");
             }
         }
 }

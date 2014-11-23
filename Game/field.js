@@ -392,6 +392,10 @@ Field.prototype.GetWidth = function(){
     return this.fieldX*(this.tileWidth+this.tileSpace) - this.tileSpace + this.borderw*2;
 }
 
+Field.prototype.GetFieldY = function(){
+    return this.fieldY;
+}
+
 Field.prototype.GetHeight = function(){
     return this.fieldY*(this.tileHeight+this.tileSpace) - this.tileSpace + this.borderh*2;
 }
