@@ -77,7 +77,11 @@ Tile.prototype.Render = function(ctx){
 
     //Inner
     this.SetFillStyle(ctx, this.color);
-    ctx.fillRect(x+s, y+u, Math.abs(parseInt(w-s*2)), h-u);
+    var height = h-u;
+    var width = w-(s*2);
+    if (height < 0) height = 0;
+    if (width < 0) width = 0;
+    ctx.fillRect(x+s, y+u, width, height);
 
     //Downer
     this.SetFillStyle(ctx, ColorLuminance(this.color, -0.2));

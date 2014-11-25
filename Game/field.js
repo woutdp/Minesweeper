@@ -83,14 +83,14 @@ Field.prototype.GenerateField = function(fieldX, fieldY, w, h , tileSpace, borde
     this.tileWidth  = w;
     this.tileHeight = h;
     this.tileSpace  = tileSpace;
-    this.borderw     = borderW;
-    this.borderh     = borderH;
+    this.borderw    = borderW;
+    this.borderh    = borderH;
 
     this.tile = [];
 
-    for (var i = 0, l = fieldX; i < l; i++) {
+    for (var i = 0, l = fieldX; i < l; ++i) {
         this.tile[i] = [];
-        for (var j = 0, l2 = fieldY; j < l2; j++) {
+        for (var j = 0, l2 = fieldY; j < l2; ++j) {
             this.tile[i][j] = new Tile(i*(w+tileSpace)+this.borderw, j*(h+tileSpace)+this.borderh, w, h, i, j, this);
         }
     }
@@ -102,15 +102,15 @@ Field.prototype.GenerateShowing = function(){
     var w = this.tileWidth;
     var h = this.tileHeight;
 
-    for (var i = 0; i < this.fieldX; i++) {
-        for (var j = 0; j < this.fieldY; j++) {
+    for (var i = 0; i < this.fieldX; ++i) {
+        for (var j = 0; j < this.fieldY; ++j) {
             //this.tile[i][j].Animate("popup", (i*j)/200);
             //this.tile[i][j].Animate("popup", Math.sqrt(Math.sin(i*4)*Math.cos(j*4))*((i*j)/j)*Math.random());
             //var h = 0.5 * Math.random()/20; //The smaller the bigger the circles
             //var w = 0.5 * Math.random()/20;
             var x = Math.abs(i - (this.fieldX/2));
             var y = Math.abs(j - (this.fieldY/2));
-            this.tile[i][j].Animate("popup", (Math.sqrt(Math.cos(x*3)*y/10)),0.3);
+            this.tile[i][j].Animate("popup", (Math.sqrt(Math.cos(x*3)*y/10)+0.1),0.3);
             //this.tile[i][j].Animate("popup", Math.sqrt(Math.cos(x*3)*y/10), function(){console.log("yo, I'm done");});
             //this.tile[i][j].Animate("popup", (((Math.cos(x*w*3)+1.5))/((Math.sin(x*h*5)+1.5))/10)+0.2);
         }
