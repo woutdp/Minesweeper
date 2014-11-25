@@ -19,37 +19,72 @@ div{
 }
 
 #buttonContainer {
-    height: 54px;
+    height: 50px;
+    margin-top: 20px;
 }
 
 #gameContainer {
+    margin-top: 0px;
     margin-left: auto;
     margin-right: auto;
+    box-shadow: 0px 5px 15px 4px #666666;
 }
 
 #gameMenu {
     position: absolute;
     display: block;
-    padding: 20px;
-    margin: 20px;
+    padding: 0px;
+    margin: 0px;
     z-index: 0;
     /*-webkit-border-radius:14px;
     -moz-border-radius:14px;
     border-radius:14px;*/
     background: rgba(0,0,0,0.0);
-    -webkit-transition-duration: 0.6s; /* Safari */
+    -webkit-transition-duration: 1.6s; /* Safari */
     transition-duration: 0.6s);
     color: rgba(0,0,0,0.0);
     font-weight: bold;
     font-size: 20pt;
     text-align: center;
     float:none;
+
+    /*-webkit-filter: blur(4px);
+    -moz-filter: blur(4px);
+    -ms-filter: blur(4px);
+    -o-filter: blur(4px);
+    filter: blur(4px);
+    background-size:cover;*/
+
+    /*background: -webkit-linear-gradient(rgba(255,255,255,1), blue); /* For Safari 5.1 to 6.0 */
+    /*background: -o-linear-gradient(rgba(255,255,255,1), blue); /* For Opera 11.1 to 12.0 */
+    /*background: -moz-linear-gradient(rgba(255,255,255,1), blue); /* For Firefox 3.6 to 15 */
+    /*background: linear-gradient(rgba(255,255,255,0), black); /* Standard syntax (must be last) */
+}
+
+#gameMenu p {
+    padding: 20px;
+}
+
+.subButton {
+    width: 150px;
+    height: 50px;
+    color: rgb(255,255,255);
 }
 
 #gameMenu button {
     float:none;
     margin-left: auto;
     margin-right: auto;
+
+    box-shadow: none;
+    border-style: none;
+}
+
+#resumeGame {
+    margin-top: 20px;
+    font-size: 20pt;
+    height: 50px;
+    width: 40%;
 }
 
 canvas{
@@ -62,46 +97,43 @@ canvas{
 }
 
 button {
-    /*
-    color: #f9f6f2;
-    height: 40px;
-    line-height: 42px;
-    */
-    margin: 6px;
-    margin-left: 0px;
-
     font-family: "Clear Sans", "Helvetica Neue", Arial, sans-serif;
     font-weight: bold;
-    font-size: 15pt;
-    color: #05C8B6;
-    /*background-color: #3F3F3F;*/
+    font-size: 18pt;
+
+    margin-right: 13px;
+    margin-left: 0px;
+
+    padding: 2px 10px;
+    /*padding-bottom:4px;*/
+
+    color: #1D7E76;
     background-color: #15E8D6;
+
     display: block;
-    padding: 9px 30px;
-    padding-bottom:8px;
+
     -moz-border-radius: 0px;
     -webkit-border-radius: 0px;
-    border: 3 8px;
-    border-top: 7px;
-    border-left: 7px;
-    border-right: 7px;
-    border-width: 5px;
-    border-color: #15E8D6;
-    outline: none;
-    /*height: 40px;*/
+    border-width: 0px;
+    border-bottom: 4px;
+    border-color: #12C7B8;
+    border-style: solid;
+    outline:none;
 
-    margin-bottom: 5px;
     text-align: center;
-    -webkit-transition-duration: 0.2s; /* Safari */
-    transition-duration: 0.2s;
+    -webkit-transition-duration: 0.1s; /* Safari */
+    transition-duration: 0.1s;
     cursor: pointer;
     float: left;
+
+    box-shadow: 0px 3px 4px #888888;
 }
 
 button:hover {
     /*color: #25C8B7;*/
-    color: #FFFFFF;
+    color: #AC5931;
     background-color: #FB702D;
+    border-color: #D86027;
     /*font-size: 110%;*/
 }
 

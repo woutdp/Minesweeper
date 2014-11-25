@@ -3,7 +3,7 @@ var Application = (function() {
     //===================================
     // CONSTANTS
     //===================================
-    var     FIELDX = 35,
+    var     FIELDX = 30,
             FIELDY = parseInt(FIELDX/1.618), //max of 50 because of paint draw image?
             TILESIZE = 26,
             TILESPACE = 0.0,
@@ -14,7 +14,7 @@ var Application = (function() {
             // 10 = Soldier
             // 15 = Recruit
             BORDERW = 0,
-            BORDERH = 5;
+            BORDERH = 0;
 
     //===================================
     // VARIABLES
@@ -29,6 +29,8 @@ var Application = (function() {
     resetButton.addEventListener("click", ResetField);
     var resizeButton = document.getElementById("resizeButton");
     resizeButton.addEventListener("click", ResizeField);
+    var resizeButton = document.getElementById("resumeGame");
+    resizeButton.addEventListener("click", CloseMenu);
 
     var field = new Field(FIELDX, FIELDY, TILESIZE, TILESIZE, TILESPACE, DIFFICULTY, BORDERW, BORDERH);
     var mouseDown = false;
@@ -77,7 +79,7 @@ var Application = (function() {
 
         if (gameContainer.offsetHeight != canvas.height || gameContainer.offsetWidth != canvas.width){
             gameContainer.setAttribute("style","height:"+ canvas.height+"px;" + "width:"+ canvas.width+"px;");
-            gameMenu.setAttribute("style","height:"+ (canvas.height-BORDERH*2-40+5)+"px;" + "width:"+ (canvas.width-BORDERW*2-40)+"px;");
+            gameMenu.setAttribute("style","height:"+ (canvas.height-BORDERH*2)+"px;" + "width:"+ (canvas.width-BORDERW*2)+"px;");
             container.setAttribute("style","width:"+ canvas.width+"px;");
         }
 
@@ -107,8 +109,20 @@ var Application = (function() {
     function ResizeField() {
         Invalidate();
         gameMenu.style.zIndex = 2;
-        gameMenu.style.color = "rgb(90,90,90)";
-        gameMenu.style.background = "rgba(255,255,255,0.6)";
+        gameMenu.style.color = "rgb(255,255,255)";
+        canvas.style.webkitFilter = "blur(2px)";
+        gameMenu.style.background = "rgba(0,0,0,0.2)";
+        gameMenu.style.backgroundImage = "linear-gradient(rgba(255,255,255,0) 20%, rgba(0,0,0,0.5))" /* Standard syntax (must be last)*/
+        //field.Resize(FIELDX,FIELDY);
+    }
+
+    function CloseMenu() {
+        Invalidate();
+        gameMenu.style.zIndex = 0;
+        gameMenu.style.color = "rgb(255,255,255)";
+        canvas.style.webkitFilter = "blur(0px)";
+        gameMenu.style.background = "rgba(0,0,0,0.0)";
+        gameMenu.style.backgroundImage = "" /* Standard syntax (must be last)*/
         //field.Resize(FIELDX,FIELDY);
     }
 
@@ -129,7 +143,7 @@ var Application = (function() {
     //===================================
     function ResizeCanvas(width, height){
         canvas.width = width;
-        canvas.height = height;
+        canvas.height = height+5;
     }
 
     Game.run({update: Update, render: Render});

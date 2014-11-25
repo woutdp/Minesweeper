@@ -109,10 +109,10 @@ Field.prototype.GenerateShowing = function(){
             //var h = 0.5 * Math.random()/20; //The smaller the bigger the circles
             //var w = 0.5 * Math.random()/20;
             var x = Math.abs(i - (this.fieldX/2));
-            var y = Math.abs(j - (this.fieldX/2));
-            //this.tile[i][j].Animate("popup", (Math.sqrt(Math.cos(x*3)*y/10)),0.2);
+            var y = Math.abs(j - (this.fieldY/2));
+            this.tile[i][j].Animate("popup", (Math.sqrt(Math.cos(x*3)*y/10)),0.3);
             //this.tile[i][j].Animate("popup", Math.sqrt(Math.cos(x*3)*y/10), function(){console.log("yo, I'm done");});
-            this.tile[i][j].Animate("popup", (((Math.cos(x*w*3)+1.5))/((Math.sin(x*h*5)+1.5))/10)+0.2);
+            //this.tile[i][j].Animate("popup", (((Math.cos(x*w*3)+1.5))/((Math.sin(x*h*5)+1.5))/10)+0.2);
         }
     }
 }
