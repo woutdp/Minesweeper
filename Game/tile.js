@@ -94,7 +94,10 @@ Tile.prototype.Render = function(ctx){
     ctx.fillRect(x+s, y+u, width, height);
 
     //Downer
-    this.SetFillStyle(ctx, ColorLuminance(this.color, -0.2));
+    if (extraDown > 1)
+        this.SetFillStyle(ctx, ColorLuminance(this.color, -0.26));
+    else
+        this.SetFillStyle(ctx, ColorLuminance(this.color, -0.2));
     var test = Math.abs(h-d);
     ctx.fillRect(x, y+test, w, d+extraDown);
 

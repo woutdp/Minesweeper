@@ -3,7 +3,8 @@ var Application = (function() {
     //===================================
     // CONSTANTS
     //===================================
-    var     FIELDX = 25,
+    var     FIELDX = 55,
+            //FIELDY = FIELDX+5,
             FIELDY = parseInt(FIELDX/1.618), //max of 50 because of paint draw image?
             TILESIZE = 26,
             TILESPACE = 0.0,
@@ -89,7 +90,7 @@ var Application = (function() {
 
     function Render() {
         if (invalid) {
-            cache = renderToCanvas(field.GetWidth(), field.GetWidth(), ActualRender, cache);
+            cache = renderToCanvas(field.GetWidth(), field.GetHeight()+5, ActualRender, cache);
             invalid = false;
         }
         ctx.drawImage(cache, 0, 0);
@@ -101,6 +102,15 @@ var Application = (function() {
         field.Render(ctx);
     }
 
+    function renderToCanvas(width, height, render, canvas) {
+      canvas = canvas || createCanvas(width, height, canvas);
+      render(canvas.getContext('2d'));
+      return canvas;
+    }
+
+    //===================================
+    // OTHER FUNCTIONS
+    //===================================
     function ResetField() {
         Invalidate();
         field.Reset();
@@ -110,8 +120,9 @@ var Application = (function() {
         Invalidate();
         gameMenu.style.zIndex = 2;
         gameMenu.style.color = "rgb(255,255,255)";
-        canvas.style.webkitFilter = "blur(2px)";
+        //canvas.style.webkitFilter = "blur(2px)";
         gameMenu.style.background = "rgba(0,0,0,0.2)";
+        gameMenu.style.opacity = "1";
         gameMenu.style.backgroundImage = "linear-gradient(rgba(255,255,255,0) 20%, rgba(0,0,0,0.5))" /* Standard syntax (must be last)*/
         //field.Resize(FIELDX,FIELDY);
     }
@@ -120,16 +131,11 @@ var Application = (function() {
         Invalidate();
         gameMenu.style.zIndex = 0;
         gameMenu.style.color = "rgb(255,255,255)";
-        canvas.style.webkitFilter = "blur(0px)";
+        //canvas.style.webkitFilter = "blur(0px)";
         gameMenu.style.background = "rgba(0,0,0,0.0)";
+        gameMenu.style.opacity = "0";
         gameMenu.style.backgroundImage = "" /* Standard syntax (must be last)*/
         //field.Resize(FIELDX,FIELDY);
-    }
-
-    function renderToCanvas(width, height, render, canvas) {
-      canvas = canvas || createCanvas(width, height, canvas);
-      render(canvas.getContext('2d'));
-      return canvas;
     }
 
     function createCanvas(width, height) {
@@ -138,9 +144,7 @@ var Application = (function() {
       canvas.height = height;
       return canvas;
     }
-    //===================================
-    // OTHER FUNCTIONS
-    //===================================
+
     function ResizeCanvas(width, height){
         canvas.width = width;
         canvas.height = height+5;
