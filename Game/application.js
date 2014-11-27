@@ -3,7 +3,7 @@ var Application = (function() {
     //===================================
     // CONSTANTS
     //===================================
-    var     FIELDX = 30,
+    var     FIELDX = 25,
             FIELDY = parseInt(FIELDX/1.618), //max of 50 because of paint draw image?
             TILESIZE = 26,
             TILESPACE = 0.0,

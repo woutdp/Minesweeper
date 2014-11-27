@@ -16,7 +16,7 @@ var Game = {
         // Gameloop function
         function Frame() {
             // This should always be called at the beginning of Frame
-            //fpsmeter.hide();
+            fpsmeter.hide();
             fpsmeter.tickStart();
 
             now = Timestamp();
