@@ -1,9 +1,0 @@
-E:\KULeuven\2014-2015\Sem1\Informatica Werktuigen\Practicum2014\WindowsApplication1\WindowsApplication1\bin\Debug\WindowsApplication1.exe.config
-E:\KULeuven\2014-2015\Sem1\Informatica Werktuigen\Practicum2014\WindowsApplication1\WindowsApplication1\bin\Debug\WindowsApplication1.exe
-E:\KULeuven\2014-2015\Sem1\Informatica Werktuigen\Practicum2014\WindowsApplication1\WindowsApplication1\bin\Debug\WindowsApplication1.pdb
-E:\KULeuven\2014-2015\Sem1\Informatica Werktuigen\Practicum2014\WindowsApplication1\WindowsApplication1\bin\Debug\WindowsApplication1.xml
-E:\KULeuven\2014-2015\Sem1\Informatica Werktuigen\Practicum2014\WindowsApplication1\WindowsApplication1\obj\Debug\WindowsApplication1.Resources.resources
-E:\KULeuven\2014-2015\Sem1\Informatica Werktuigen\Practicum2014\WindowsApplication1\WindowsApplication1\obj\Debug\WindowsApplication1.vbproj.GenerateResource.Cache
-E:\KULeuven\2014-2015\Sem1\Informatica Werktuigen\Practicum2014\WindowsApplication1\WindowsApplication1\obj\Debug\WindowsApplication1.exe
-E:\KULeuven\2014-2015\Sem1\Informatica Werktuigen\Practicum2014\WindowsApplication1\WindowsApplication1\obj\Debug\WindowsApplication1.xml
-E:\KULeuven\2014-2015\Sem1\Informatica Werktuigen\Practicum2014\WindowsApplication1\WindowsApplication1\obj\Debug\WindowsApplication1.pdb
