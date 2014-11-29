@@ -3,10 +3,20 @@
 
 #include "list.h"
 
+#define KNRM  "\x1B[0m"
+#define KRED  "\x1B[31m"
+#define KGRN  "\x1B[32m"
+#define KYEL  "\x1B[33m"
+#define KBLU  "\x1B[34m"
+#define KMAG  "\x1B[35m"
+#define KCYN  "\x1B[36m"
+#define KWHT  "\x1B[37m"
+
 int test_list()
 {
 	int value = 0;
 	struct List *list = list_create();
+	printf("===TEST LINKED LIST===\n");
 
 	if (list_length(list) != 0) {
 		printf("list_length of empty list should be zero\n");
@@ -57,7 +67,7 @@ int test_list()
 		printf("list_length should return 1 (after remove)\n");
 		return 0;
 	}
-	
+
 
 	// Test pop function
 	if (list_pop(list, &value) == 0) {
@@ -74,14 +84,82 @@ int test_list()
 	}
 
 
-	// TODO: Add our own test functions (!!)
+	// Test prepend function
+	list_prepend(list, 0);
+	if (list->first == NULL) {
+		printf("PREPEND:The first element shouldn't be zero\n");
+		return 0;
+	}
+	list_prepend(list, 403);
+	list_get(list, 0, &value);
+	if (value != 403) {
+		printf("PREPEND:value should be 403\n");
+		return 0;
+	}
+	if (list_length(list) != 2) {
+		printf("PREPEND:list_length should return 2\n");
+		return 0;
+	}
+	list_pop(list, &value);
+	if (value != 0) {
+		printf("PREPEND:pop should return 0\n");
+		return 0;
+	}
+	list_pop(list, &value);
 
+	// Test insert sorted
+	list_append(list, 5);
+	list_append(list, 10);
+	list_append(list, 15);
+	list_append(list, 20);
+	list_append(list, 25);
+	if (list_length(list) != 5) {
+		printf("LIST SORTED:list_length should return 5\n");
+		return 0;
+	}
+	list_insert_sorted(list, 7);
+	if (list_length(list) != 6) {
+		printf("LIST SORTED:list_length should return 6\n");
+		return 0;
+	}
+	list_get(list, 1, &value);
+	if (value != 7) {
+		printf("LIST SORTED:value should be 7\n");
+		return 0;
+	}
+	list_insert_sorted(list, 3);
+	list_get(list, 0, &value);
+	if (value != 3) {
+		printf("LIST SORTED:value should be 3\n");
+		return 0;
+	}
+
+	// Reverse print
+	printf("ORIGINAL: \t");
+	list_print(list);
+	printf("REVERSE: \t");
+	list_print_reverse(list);
+
+	// Test list_remove_all
+	list_insert_sorted(list, 10);
+	list_insert_sorted(list, 10);
+	list_insert_sorted(list, 10);
+	list_remove_all(list, 10);
+	list_remove_all(list, 3);
+	list_remove_all(list, 25);
+	if (list_length(list) != 4) {
+		printf("REMOVE ALL:list_length should return 4\n");
+		return 0;
+	}
+
+	list_delete(list);
 	return 1;
 }
 
 
 int test_dlist()
 {
+	printf("===TEST DOUBLE LINKED LIST===\n");
 	// TODO: Add your own test functions (!!)
 
 	return 1;
@@ -129,11 +207,13 @@ int test_evaluate()
 
 int main(int argc, char *argv[])
 {
+	printf(KYEL);
 	test_list();
 	test_dlist();
 	test_stack();
-	test_evaluate();
+	//test_evaluate();
 
+	printf(KNRM);
 	return 0;
 }
 
