@@ -14,9 +14,11 @@
 
 int test_list()
 {
+    printf(KYEL);
+    printf("===TEST LINKED LIST===\n");
+
     int value = 0;
     struct List *list = list_create();
-    printf("===TEST LINKED LIST===\n");
 
     if (list_length(list) != 0) {
         printf("list_length of empty list should be zero\n");
@@ -153,15 +155,20 @@ int test_list()
     }
 
     list_delete(list);
+
+    printf(KGRN);
+    printf("OK!\n");
     return 1;
 }
 
 
 int test_dlist()
 {
+    printf(KYEL);
+    printf("===TEST DOUBLE LINKED LIST===\n");
+
     int value = 0;
     struct DList* list = dlist_create();
-    printf("===TEST DOUBLE LINKED LIST===\n");
 
     //APPEND
     dlist_append(list, 5);
@@ -393,21 +400,79 @@ int test_dlist()
     dlist_print_reverse(list);
 
     dlist_delete(list);
+
+    printf(KGRN);
+    printf("OK!\n");
     return 1;
 }
 
 
 int test_stack()
 {
+    printf(KYEL);
     printf("===TEST STACK===\n");
-    // TODO: Add your own test functions (!!)
 
+    int value = 0;
+    struct Stack* stack = stack_create();
+
+    if (stack_isempty(stack) != 1)
+    {
+        printf("IS EMPTY: stack should be empty\n");
+        return 0;
+    }
+    stack_push(stack, 5);
+    if (stack_isempty(stack) != 0)
+    {
+        printf("PUSH: stack shouldn't be empty\n");
+        return 0;
+    }
+    stack_push(stack, 10);
+    if (stack_isempty(stack) != 0)
+    {
+        printf("PUSH: stack shouldn't be empty\n");
+        return 0;
+    }
+    if (stack_pop(stack, &value) != 1)
+    {
+        printf("POP: stack shouldn't be empty\n");
+        return 0;
+    }
+    if (value != 10)
+    {
+        printf("POP: value should be 10, but it is %i\n", value);
+        return 0;
+    }
+    if (stack_pop(stack, &value) != 1)
+    {
+        printf("POP: stack shouldn't be empty\n");
+        return 0;
+    }
+    if (value != 5)
+    {
+        printf("POP: value should be 5, but it is %i\n", value);
+        return 0;
+    }
+    if (stack_pop(stack, &value) != 0)
+    {
+        printf("POP: stack should be empty\n");
+        return 0;
+    }
+    if (stack_isempty(stack) == 0)
+    {
+        printf("POP: stack should be empty\n");
+        return 0;
+    }
+
+    stack_delete(stack);
+    printf(KGRN);
+    printf("OK!\n");
     return 1;
 }
 
 
 int test_evaluate()
 {
+    printf(KYEL);
     printf("===TEST EVALUATE===\n");
 
     int value;
@@ -432,9 +497,58 @@ int test_evaluate()
         return 0;
     }
 
-    // TODO: Add more test! For example: using negative numbers, testing
-    // that it returns 0 on invalid expressions, etc.
+    // Test 3
+    if (evaluate("6 4 + 5 /", &value) == 0) {
+        printf("Error evaluating string\n");
+        return 0;
+    }
+    if (value != 2) {
+        printf("Evaluate returned wrong result\n");
+        return 0;
+    }
 
+    // Test 4
+    if (evaluate("10 6 -", &value) == 0) {
+        printf("Error evaluating string\n");
+        return 0;
+    }
+    if (value != 4) {
+        printf("Evaluate returned wrong result, should have returned 4 but returned%i\n", value);
+        return 0;
+    }
+
+    // Test 5
+    if (evaluate("10 -6 +", &value) == 0) {
+        printf("Error evaluating string\n");
+        return 0;
+    }
+    if (value != 4) {
+        printf("Wrong result, should have returned 4 but returned %i\n", value);
+        return 0;
+    }
+
+    // Test 6 ULTIMATE
+    if (evaluate("1 2 - 5 - 15 5 / +", &value) == 0) {
+        printf("Error evaluating string\n");
+        return 0;
+    }
+    if (value != -3) {
+        printf("Wrong result, should have returned -3 but returned %i\n", value);
+        return 0;
+    }
+
+    // Test 7 ULTIMATE
+    if (evaluate("70 -7 /", &value) == 0) {
+        printf("Error evaluating string\n");
+        return 0;
+    }
+    if (value != -10) {
+        printf("Wrong result, should have returned -3 but returned %i\n", value);
+        return 0;
+    }
+
+    printf(KGRN);
+    printf("OK!\n");
     return 1;
 }
 
@@ -445,9 +559,9 @@ int main(int argc, char *argv[])
     test_list();
     test_dlist();
     test_stack();
-    //test_evaluate();
-
+    test_evaluate();
     printf(KNRM);
+
     return 0;
 }
 

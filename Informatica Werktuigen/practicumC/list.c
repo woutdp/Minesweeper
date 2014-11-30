@@ -584,12 +584,23 @@ int dlist_remove(struct DList* dlist, int index)
 // Create an empty stack
 struct Stack* stack_create()
 {
-    return NULL;
+    struct Stack* stack = malloc(sizeof(struct Stack));
+    stack->top = NULL;
+    return stack;
 }
 
 // Push a new element on the stack
 void stack_push(struct Stack* stack, int x)
 {
+    struct StackNode* node = malloc(sizeof(struct StackNode));
+    node->value = x;
+
+    if (stack_isempty(stack) == 1)
+        node->next = NULL;
+    else
+        node->next = stack->top;
+
+    stack->top = node;
 }
 
 // Get the value of the last added element to the stack and store it in the
@@ -597,19 +608,40 @@ void stack_push(struct Stack* stack, int x)
 // otherwise 1 is returned.
 int stack_pop(struct Stack* stack, int *value)
 {
-    return 0;
+    if (stack_isempty(stack) == 1)
+        return 0;
+
+    struct StackNode* todel = stack->top;
+    stack->top = stack->top->next;
+    *value = todel->value;
+
+    free(todel);
+    return 1;
 }
 
 // Returns 1 if the stack is empty (i.e. there are no elements to pop).
 // Otherwise it returns 0.
 int stack_isempty(struct Stack* stack)
 {
+    if (stack->top == NULL)
+        return 1;
     return 0;
 }
 
 // Delete the given stack
 void stack_delete(struct Stack* stack)
 {
+    struct StackNode* todel = stack->top;
+
+    while(todel != NULL)
+    {
+        stack->top = stack->top->next;
+        free(todel);
+
+        todel = stack->top;
+    }
+
+    free(stack);
 }
 
 
@@ -620,5 +652,58 @@ void stack_delete(struct Stack* stack)
 // postfix expression. The result is returned using the pointer `result`.
 int evaluate(char* formula, int* result)
 {
-    return 0;
+    struct Stack* stack = stack_create();
+    int length = strlen(formula);
+    *result = 0;
+
+    char temp[100];
+    strcpy (temp,"");
+    int val1;
+    int val2;
+    int returnVal = 1;
+    for (int i = 0; i < length+1; ++i)
+    {
+        if(formula[i] == ' ' || formula[i] == '\0')
+        {
+            if (strcmp(temp, "+") == 0)
+            {
+                if(stack_pop(stack, &val1) == 0 || stack_pop(stack, &val2) == 0)
+                    returnVal = 0;
+                stack_push(stack, val2+val1);
+            }
+            else if(strcmp(temp, "-") == 0)
+            {
+                if(stack_pop(stack, &val1) == 0 || stack_pop(stack, &val2) == 0)
+                    returnVal = 0;
+                stack_push(stack, val2-val1);
+            }
+            else if(strcmp(temp, "*") == 0)
+            {
+                if(stack_pop(stack, &val1) == 0 || stack_pop(stack, &val2) == 0)
+                    returnVal = 0;
+                stack_push(stack, val2*val1);
+            }
+            else if(strcmp(temp, "/") == 0)
+            {
+                if(stack_pop(stack, &val1) == 0 || stack_pop(stack, &val2) == 0)
+                    returnVal = 0;
+                stack_push(stack, val2/val1);
+            }
+            else
+            {
+                stack_push(stack, atoi(temp));
+            }
+            strcpy(temp,"");
+        }
+        else
+        {
+            strncat(temp, &formula[i],1);
+        }
+    }
+
+    if(stack_pop(stack, result) == 0)
+        returnVal = 0;
+
+    stack_delete(stack);
+    return returnVal;
 }
