@@ -257,18 +257,19 @@ void list_insert_sorted(struct List* list, int value)
 // Python: print(list[::-1])
 void list_print_reverse(struct List* list)
 {
-    struct List *reverseList = list_create();
+    struct List reverseList;
+    reverseList.first = NULL;
+
     struct ListNode* current = list->first;
 
     while (current != NULL)
     {
         struct ListNode* previous = current;
         current = current->next;
-        list_prepend(reverseList, previous->value);
+        list_prepend(&reverseList, previous->value);
     }
 
-    list_print(reverseList);
-    list_delete(reverseList);
+    list_print(&reverseList);
 }
 
 void list_remove_all(struct List* list, int value)
@@ -297,9 +298,7 @@ void list_remove_all(struct List* list, int value)
             previous = current;
             current = current->next;
         }
-
     }
-
 }
 
 
