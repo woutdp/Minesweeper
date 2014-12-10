@@ -651,7 +651,7 @@ void stack_delete(struct Stack* stack)
 // postfix expression. The result is returned using the pointer `result`.
 int evaluate(char* formula, int* result)
 {
-    struct Stack* stack = stack_create();
+    struct Stack stack;
     int length = strlen(formula);
     *result = 0;
 
@@ -666,31 +666,31 @@ int evaluate(char* formula, int* result)
         {
             if (strcmp(temp, "+") == 0)
             {
-                if(stack_pop(stack, &val1) == 0 || stack_pop(stack, &val2) == 0)
+                if(stack_pop(&stack, &val1) == 0 || stack_pop(&stack, &val2) == 0)
                     returnVal = 0;
-                stack_push(stack, val2+val1);
+                stack_push(&stack, val2+val1);
             }
             else if(strcmp(temp, "-") == 0)
             {
-                if(stack_pop(stack, &val1) == 0 || stack_pop(stack, &val2) == 0)
+                if(stack_pop(&stack, &val1) == 0 || stack_pop(&stack, &val2) == 0)
                     returnVal = 0;
-                stack_push(stack, val2-val1);
+                stack_push(&stack, val2-val1);
             }
             else if(strcmp(temp, "*") == 0)
             {
-                if(stack_pop(stack, &val1) == 0 || stack_pop(stack, &val2) == 0)
+                if(stack_pop(&stack, &val1) == 0 || stack_pop(&stack, &val2) == 0)
                     returnVal = 0;
-                stack_push(stack, val2*val1);
+                stack_push(&stack, val2*val1);
             }
             else if(strcmp(temp, "/") == 0)
             {
-                if(stack_pop(stack, &val1) == 0 || stack_pop(stack, &val2) == 0)
+                if(stack_pop(&stack, &val1) == 0 || stack_pop(&stack, &val2) == 0)
                     returnVal = 0;
-                stack_push(stack, val2/val1);
+                stack_push(&stack, val2/val1);
             }
             else
             {
-                stack_push(stack, atoi(temp));
+                stack_push(&stack, atoi(temp));
             }
             strcpy(temp,"");
         }
@@ -700,9 +700,8 @@ int evaluate(char* formula, int* result)
         }
     }
 
-    if(stack_pop(stack, result) == 0)
+    if(stack_pop(&stack, result) == 0)
         returnVal = 0;
 
-    stack_delete(stack);
     return returnVal;
 }
