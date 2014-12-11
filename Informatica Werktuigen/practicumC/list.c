@@ -257,8 +257,8 @@ void list_insert_sorted(struct List* list, int value)
 // Python: print(list[::-1])
 void list_print_reverse(struct List* list)
 {
-    struct List reverseList;
-    reverseList.first = NULL;
+    struct List* reverseList = malloc(sizeof(struct List));
+    reverseList->first = NULL;
 
     struct ListNode* current = list->first;
 
@@ -266,10 +266,12 @@ void list_print_reverse(struct List* list)
     {
         struct ListNode* previous = current;
         current = current->next;
-        list_prepend(&reverseList, previous->value);
+        list_prepend(reverseList, previous->value);
     }
 
-    list_print(&reverseList);
+    list_print(reverseList);
+
+    list_delete(reverseList);
 }
 
 void list_remove_all(struct List* list, int value)
@@ -651,7 +653,7 @@ void stack_delete(struct Stack* stack)
 // postfix expression. The result is returned using the pointer `result`.
 int evaluate(char* formula, int* result)
 {
-    struct Stack stack;
+    struct Stack* stack = stack_create();
     int length = strlen(formula);
     *result = 0;
 
@@ -666,33 +668,33 @@ int evaluate(char* formula, int* result)
         {
             if (strcmp(temp, "+") == 0)
             {
-                if(stack_pop(&stack, &val1) == 0 || stack_pop(&stack, &val2) == 0)
+                if(stack_pop(stack, &val1) == 0 || stack_pop(stack, &val2) == 0)
                     returnVal = 0;
-                stack_push(&stack, val2+val1);
+                stack_push(stack, val2+val1);
             }
             else if(strcmp(temp, "-") == 0)
             {
-                if(stack_pop(&stack, &val1) == 0 || stack_pop(&stack, &val2) == 0)
+                if(stack_pop(stack, &val1) == 0 || stack_pop(stack, &val2) == 0)
                     returnVal = 0;
-                stack_push(&stack, val2-val1);
+                stack_push(stack, val2-val1);
             }
             else if(strcmp(temp, "*") == 0)
             {
-                if(stack_pop(&stack, &val1) == 0 || stack_pop(&stack, &val2) == 0)
+                if(stack_pop(stack, &val1) == 0 || stack_pop(stack, &val2) == 0)
                     returnVal = 0;
-                stack_push(&stack, val2*val1);
+                stack_push(stack, val2*val1);
             }
             else if(strcmp(temp, "/") == 0)
             {
-                if(stack_pop(&stack, &val1) == 0 || stack_pop(&stack, &val2) == 0)
+                if(stack_pop(stack, &val1) == 0 || stack_pop(stack, &val2) == 0)
                     returnVal = 0;
-                stack_push(&stack, val2/val1);
+                stack_push(stack, val2/val1);
             }
             else
             {
-                stack_push(&stack, atoi(temp));
+                stack_push(stack, atoi(temp));
             }
-            strcpy(temp,"");
+            strcpy(temp, "");
         }
         else
         {
@@ -700,8 +702,9 @@ int evaluate(char* formula, int* result)
         }
     }
 
-    if(stack_pop(&stack, result) == 0)
+    if(stack_pop(stack, result) == 0)
         returnVal = 0;
 
+    stack_delete(stack);
     return returnVal;
 }
