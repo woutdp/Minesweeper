@@ -148,7 +148,7 @@ def activeBlockRotate(model):
 
     # MAGIC FORMULA!
     # x = y
-    # y = x*-1
+    # y = -x
     # this will rotate the block counter clockwise
 
     for i in range(len(block["x"])):
@@ -156,12 +156,11 @@ def activeBlockRotate(model):
         relY = toRelative(block,"y", i)
 
         if block["counter"] == False:
-            x = relY * -1
+            x = -relY
             y = relX
         else:
             x = relY
-            y = relX * -1
-
+            y = -relX
 
         block["x"][i] = toGlobal(block, x, "x", i)
         block["y"][i] = toGlobal(block, y, "y", i)
