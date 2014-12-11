@@ -4,14 +4,14 @@ from random import randrange
 import random
 
 g_ActiveBlock = {"coord":[]}
-g_Field = []
+g_Field = set([])
 g_Pause = False
 
 def initialize():
     # called once when the game is started (main() executed)
     # [ put your own model/representation 
     #   initialization here ]
-    return {"dimensions": (10,20),
+    return {"dimensions":       (10,20),
             "line":             {"coord":[(3,0),(4,0),(5,0),(6,0)], "a":(4,0), "counter":False, "amount":2}, #amount is rotation amount, 2 means only 2 rotations
             "squiggly":         {"coord":[(4,1),(5,0),(5,1),(6,0)], "a":(5,1), "counter":False, "amount":2}, #counter is to see if it needs to be turned counter clockwise
             "reverseSquiggly":  {"coord":[(4,0),(5,1),(5,0),(6,1)], "a":(5,0), "counter":False, "amount":2},
@@ -41,15 +41,17 @@ def draw(model, canvas):
     for x in range(dimensions[0]):
         for y in range(dimensions[1]):
             color = default_color
+
+            for t in g_ActiveBlock["coord"]:
+                if t[0] == x and t[1] == y:
+                    color = g_ActiveBlock["col"]
+
+            if color == default_color:
+                for t in g_Field:
+                    if t[0] == x and t[1] == y:
+                        color = t[2]
+
             rect = drawBlock(canvas, x, y, color, block_height, block_margin, field_padding)
-
-    for t in g_ActiveBlock["coord"]:
-        color = g_ActiveBlock["col"] # color of filled block
-        rect = drawBlock(canvas, t[0], t[1], color, block_height, block_margin, field_padding)
-
-    for t in g_Field:
-        color = t[2] # color of filled block
-        rect = drawBlock(canvas, t[0], t[1], color, block_height, block_margin, field_padding)
 
 
 def onkey(model, keycode):
@@ -90,28 +92,37 @@ def drawBlock(canvas, x, y, color, block_height, block_margin, field_padding):
 def activeBlockFreeze(model):
     global g_Field
     for t in g_ActiveBlock["coord"]:
-        g_Field.append((t[0],t[1],g_ActiveBlock["col"]))
+        g_Field.add((t[0],t[1],g_ActiveBlock["col"]))
 
     deleteFullLines(model)
     requestNewBlock(model)
 
 def blockOutOfBounds(block, direction, model):
+    # VARIABLES
+    playingFieldX = model["dimensions"][0]
+    playingFieldY = model["dimensions"][1]
+
+    # Check if the block is out of the playing field
+    for t in block["coord"]:
+        if t[0] < 0 or t[0] >= playingFieldX:
+            return True
+        if t[1] >= playingFieldY:
+            activeBlockFreeze(model)
+            return True
+
+    # Check if block is in the set
     if (direction == "left" or direction == "right" or direction == "rotate"):
         for i in block["coord"]:
-            if i[0] < 0 or i[0] >= model["dimensions"][0]:
-                return True
             for t in g_Field:
                 if i[0] == t[0] and i[1] == t[1]:
                     return True
     elif (direction == "down"):
         for i in block["coord"]:
-            if i[1] >= model["dimensions"][1]:
-                activeBlockFreeze(model)
-                return True
             for t in g_Field:
                 if i[0] == t[0] and i[1] == t[1]:
                     activeBlockFreeze(model)
                     return True
+    return False
 
 def activeBlockMove(direction, model):
     global g_ActiveBlock
@@ -150,12 +161,10 @@ def activeBlockRotate(model):
     newCoord = []
     for t in block["coord"]:
         rel = toRelative(block["a"], t)
-
         if block["counter"] == False:
             coor = (-rel[1], rel[0])
         else:
             coor = (rel[1], -rel[0])
-
         newCoord.append(toGlobal(block["a"], coor))
 
     block["coord"] = newCoord
@@ -184,17 +193,22 @@ def deleteFullLines(model):
 
 def deleteLine(y, model):
     global g_Field
-    field = []
+    field = set([])
     for t in g_Field:
         if y != t[1]:
-            field.append(t)
+            field.add(t)
     g_Field = field
     moveFieldDown(y)
 
 def moveFieldDown(y):
-    for i in range(len(g_Field)):
-        if y > g_Field[i][1]:
-            g_Field[i] = (g_Field[i][0], g_Field[i][1]+1, g_Field[i][2])
+    global g_Field
+    field = set([])
+    for t in g_Field:
+        if y > t[1]:
+            field.add((t[0],t[1]+1,t[2]))
+        else:
+            field.add((t[0],t[1],t[2]))
+    g_Field = field
 
 def requestNewBlock(model):
     global g_ActiveBlock
