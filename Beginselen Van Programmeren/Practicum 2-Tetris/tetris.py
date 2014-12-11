@@ -45,9 +45,10 @@ def draw(model, canvas):
                 if x == ax and y == ay:
                     color = g_ActiveBlock["col"] # color of filled block
 
-            for i in range(len(g_Field)):
-                if x == g_Field[i][0] and y == g_Field[i][1]:
-                    color = g_Field[i][2] # color of filled block
+            for t in g_Field:
+                if x == t[0] and y == t[1]:
+                    color = t[2] # color of filled block
+                    break
 
             rect = canvas.create_rectangle(
                 x*block_height+(x+1)*block_margin+field_padding,
@@ -102,8 +103,8 @@ def blockOutOfBounds(block, direction, model):
             y = block["y"][i]
             if x < 0 or x >= model["dimensions"][0]:
                 return True
-            for i in range(len(g_Field)):
-                if x == g_Field[i][0] and y == g_Field[i][1]:
+            for t in g_Field:
+                if x == t[0] and y == t[1]:
                     return True
     elif (direction == "down"):
         for i in r:
@@ -112,8 +113,8 @@ def blockOutOfBounds(block, direction, model):
             if y >= model["dimensions"][1]:
                 activeBlockFreeze(model)
                 return True
-            for i in range(len(g_Field)):
-                if x == g_Field[i][0] and y == g_Field[i][1]:
+            for t in g_Field:
+                if x == t[0] and y == t[1]:
                     activeBlockFreeze(model)
                     return True
 
@@ -187,8 +188,8 @@ def deleteFullLines(model):
     dimensions = model["dimensions"]
     for y in range(dimensions[1]):
         counter = 0
-        for i in range(len(g_Field)):
-            if y == g_Field[i][1]:
+        for t in g_Field:
+            if y == t[1]:
                 counter += 1
         if counter == dimensions[0]:
             deleteLine(y,model)
@@ -196,9 +197,9 @@ def deleteFullLines(model):
 def deleteLine(y, model):
     global g_Field
     field = []
-    for i in range(len(g_Field)):
-        if y != g_Field[i][1]:
-            field.append(g_Field[i])
+    for t in g_Field:
+        if y != t[1]:
+            field.append(t)
     g_Field = field
     moveFieldDown(y)
 
@@ -212,8 +213,8 @@ def requestNewBlock(model):
 
     choices = 7
     blockname = ""
-
     r = randrange(choices)
+
     if r == 0:
         blockname = "square"
     elif r == 1:
@@ -228,6 +229,8 @@ def requestNewBlock(model):
         blockname = "lBlock"
     elif r == 6:
         blockname = "reverseLBlock"
+    else:
+        print("requestNewBlock: There is no blockname for this number")
 
     g_ActiveBlock = deepcopy(model[blockname])
 
@@ -240,8 +243,8 @@ def checkGameOver(model):
     for i in range(len(g_ActiveBlock["x"])):
         x = g_ActiveBlock["x"][i]
         y = g_ActiveBlock["y"][i]
-        for i in range(len(g_Field)):
-            if x == g_Field[i][0] and y == g_Field[i][1]:
+        for t in g_Field:
+            if x == t[0] and y == t[1]:
                 sys.exit()
 
 ###########################################################
@@ -267,11 +270,7 @@ def main(update_interval, canvas_dimensions):
     # bind the keypress() function to a key press event
     # while passing the model and the canvas as arguments too
     canvas.pack()
-    master.bind("<Right>", lambda e: keypress(e, model, canvas))
-    master.bind("<Left>", lambda e: keypress(e, model, canvas))
-    master.bind("<Down>", lambda e: keypress(e, model, canvas))
-    master.bind("<Up>", lambda e: keypress(e, model, canvas))
-    master.bind("<r>", lambda e: keypress(e, model, canvas))
+    master.bind("<Key>", lambda e: keypress(e, model, canvas))
 
     # start the gameloop
     gameloop(update_interval, model, master, canvas)
