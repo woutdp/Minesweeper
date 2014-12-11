@@ -15,8 +15,8 @@ def initialize():
             "line":             {"coord":[(3,0),(4,0),(5,0),(6,0)], "a":(4,0), "counter":False, "amount":2}, #amount is rotation amount, 2 means only 2 rotations
             "squiggly":         {"coord":[(4,1),(5,0),(5,1),(6,0)], "a":(5,1), "counter":False, "amount":2}, #counter is to see if it needs to be turned counter clockwise
             "reverseSquiggly":  {"coord":[(4,0),(5,1),(5,0),(6,1)], "a":(5,0), "counter":False, "amount":2},
-            "lBlock":           {"coord":[(4,0),(5,0),(6,0),(6,1)], "a":(5,0), "counter":False, "amount":4},
-            "reverseLBlock":    {"coord":[(5,0),(5,1),(5,2),(4,2)], "a":(5,1), "counter":False, "amount":4},
+            "lBlock":           {"coord":[(3,1),(3,0),(4,0),(5,0)], "a":(4,0), "counter":False, "amount":4},
+            "reverseLBlock":    {"coord":[(3,0),(4,0),(5,0),(5,1)], "a":(4,0), "counter":False, "amount":4},
             "tBlock":           {"coord":[(4,1),(4,0),(5,0),(6,0)], "a":(5,0), "counter":False, "amount":4},
             "square":           {"coord":[(4,0),(5,0),(4,1),(5,1)], "a":None,  "counter":False, "amount":0}}
     # the data structure returned from this method
@@ -34,32 +34,25 @@ def draw(model, canvas):
     block_height = 23
     block_margin = 2
     field_padding = 10
+    default_color = "#f2f2f2"
     dimensions = model["dimensions"]
+
+    # draws rectangle grid
     for x in range(dimensions[0]):
         for y in range(dimensions[1]):
-            color = "#f2f2f2" # default color of empty block
+            color = default_color
+            rect = drawBlock(canvas, x, y, color, block_height, block_margin, field_padding)
 
-            for t in g_ActiveBlock["coord"]:
-                if (x,y) == t:
-                    color = g_ActiveBlock["col"] # color of filled block
+    for t in g_ActiveBlock["coord"]:
+        color = g_ActiveBlock["col"] # color of filled block
+        rect = drawBlock(canvas, t[0], t[1], color, block_height, block_margin, field_padding)
 
-            for t in g_Field:
-                if x == t[0] and y == t[1]:
-                    color = t[2] # color of filled block
-                    break
+    for t in g_Field:
+        color = t[2] # color of filled block
+        rect = drawBlock(canvas, t[0], t[1], color, block_height, block_margin, field_padding)
 
-            rect = canvas.create_rectangle(
-                x*block_height+(x+1)*block_margin+field_padding,
-                y*block_height+(y+1)*block_margin+field_padding,
-                (x+1)*block_height+(x+1)*block_margin+field_padding,
-                (y+1)*block_height+(y+1)*block_margin+field_padding,
-                fill=color, outline=color)
-            # draws a rectangle
-    # draws rectangle grid
-    
+
 def onkey(model, keycode):
-    # called when user presses a key
-
     if keycode == 113: #LEFT
         activeBlockMove("left", model)
     elif keycode == 114: #RIGHT
@@ -85,6 +78,15 @@ def onloop(model):
 ###########################################################
 ###############---MY OWN FUNCTIONS---######################
 ###########################################################
+def drawBlock(canvas, x, y, color, block_height, block_margin, field_padding):
+    return canvas.create_rectangle(
+            x*block_height+(x+1)*block_margin+field_padding,
+            y*block_height+(y+1)*block_margin+field_padding,
+            (x+1)*block_height+(x+1)*block_margin+field_padding,
+            (y+1)*block_height+(y+1)*block_margin+field_padding,
+            fill=color, outline=color)
+
+
 def activeBlockFreeze(model):
     global g_Field
     for t in g_ActiveBlock["coord"]:
