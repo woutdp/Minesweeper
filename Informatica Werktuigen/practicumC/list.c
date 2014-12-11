@@ -257,7 +257,7 @@ void list_insert_sorted(struct List* list, int value)
 // Python: print(list[::-1])
 void list_print_reverse(struct List* list)
 {
-    struct List* reverseList = malloc(sizeof(struct List));
+    struct List* reverseList = list_create();
     reverseList->first = NULL;
 
     struct ListNode* current = list->first;
