@@ -1,8 +1,0 @@
-MACRO
-    MACHT r, x, n
-MCREINDE
-
-HIA.w R2, 5
-MACHT R1, R2, 2
-STP
-EINDPR
