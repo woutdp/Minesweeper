@@ -1,0 +1,6 @@
+\contentsline {chapter}{\numberline {1}De realisatie van de EMU}{2}
+\contentsline {section}{\numberline {1.1}De eerste fase (01/07/1990 - 31/12/93)}{2}
+\contentsline {section}{\numberline {1.2}De tweede fase (01/01/1994 - 31/12/1998)}{2}
+\contentsline {section}{\numberline {1.3}De derde fase (01/01/1999 - 31/12/2001)}{3}
+\contentsline {section}{\numberline {1.4}De criteria van Maastricht}{4}
+\contentsline {chapter}{\numberline {2}De deelnemers}{7}

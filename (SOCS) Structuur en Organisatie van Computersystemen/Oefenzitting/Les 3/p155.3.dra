@@ -1,0 +1,103 @@
+MAIN:   HIA.w R0, -1
+        BST R0
+        HIA R8, R9
+        BST R0
+
+        HIA.w R1, 0 | x
+        HIA.w R2, 0 | y
+
+        LEZ | lees x in
+        HIA R1, R0
+while:  VGL.w R1, -1
+        VSP GEL, eWhile
+            LEZ | lees y in
+            HIA R2, R0
+
+            AFT.w R9, 1
+            BST R2
+            BST R1
+            BST R8
+            HIA R8, R9
+            SBR KGV
+            HST R8
+            HST R1
+            HST R2
+            HST R3
+
+            BST R3
+            BST R2
+            BST R1
+            BST R8
+            HIA R8, R9
+            SBR PRINTINT
+            HST R8
+            HST R1
+            HST R2
+            HST R3
+
+            LEZ
+            HIA R1, R0
+        SPR while
+eWhile: STP
+
+KGV:    BST R0
+        BST R1
+        BST R2
+        BST R3
+
+        HIA R1, 1(R8) | a
+        HIA R2, 2(R8) | b
+
+        AFT.w R9, 1
+        BST R2
+        BST R1
+        BST R8
+        HIA R8, R9
+        SBR GGD
+        HST R8
+        HST R1
+        HST R2
+        HST R3 | resultaat
+
+        VER R1, R2
+        DEL R1, R3
+
+        BIG R1, 3(R8)
+        HST R3
+        HST R2
+        HST R1
+        HST R0
+        KTG
+
+PRINTINT:BST R0
+        HIA R0, 1(R8)
+        DRU
+        NWL
+        HIA R0, 2(R8)
+        DRU
+        NWL
+        HIA R0, 3(R8)
+        DRU
+        NWL
+        HST R0
+        KTG
+
+GGD:    BST R1
+        HIA R1, 1(R8) | a
+        HIA R0, 2(R8) | b
+        MOD R1, R0
+        HIA R2, R1 | r
+
+GGDwhile:  VGL.w R1, 0
+        VSP GEL, GGDeWhile
+        HIA R1, R0
+        HIA R0, R2
+
+        MOD R1, R0
+        HIA R2, R1
+        SPR GGDwhile
+
+GGDeWhile: BIG R0, 3(R8)
+        HST R1
+        KTG
+        EINDPR

@@ -1,0 +1,81 @@
+MAIN:   HIA.w R0, -1
+        BST R0
+        HIA R8, R9
+        BST R0
+
+        HIA R1, 0 | m
+        HIA R2, 0 | i
+        HIA R3, 0 |
+
+        LEZ
+        HIA R1, R0
+
+        HIA.a R0, f
+        BST R0
+        BST R1
+        BST R8
+        HIA R8, R9
+        SBR FIB
+        HST R8
+        HST R1
+        HST R0
+
+        HIA.w R2, 0
+forMain:VGL R2, R1
+        VSP GRG, eForMain
+                HIA R0, f(R2)
+                DRU
+                NWL
+        OPT.w R2, 1
+        SPR forMain
+eForMain:
+        STP
+
+FIB:    BST R0
+        BST R1
+        BST R2
+        BST R3
+        BST R4
+        BST R5
+        BST R6
+
+        HIA R1, 1(R8) | n
+        HIA R2, 2(R8) | adres r
+
+        HIA.w R0, 1
+        BIG R0, 0(R2)
+        BIG R0, 1(R2)
+
+
+        HIA.w R3, 2
+forFib: VGL R3, R1
+        VSP GRG, eForFib
+                HIA R4, R2
+                AFT.w R4, 1
+                OPT.w R4, R3
+                HIA R5, 0(R4)
+
+                HIA R4, R2
+                AFT.w R4, 2
+                OPT.w R4, R3
+                HIA R6, 0(R4)
+                OPT R6, R5
+
+                HIA R5, R2
+                OPT R5, R3
+                BIG R6, 0(R5)
+        OPT.w R3, 1
+        SPR forFib
+eForFib:
+
+        HST R6
+        HST R5
+        HST R4
+        HST R3
+        HST R2
+        HST R1
+        HST R0
+        KTG
+
+f:      RESGR 100
+        EINDPR

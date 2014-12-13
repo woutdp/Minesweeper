@@ -1,0 +1,45 @@
+MAIN:   HIA.w R0, -1
+        BST R0
+        HIA R8, R9
+        BST R0
+
+        LEZ
+        HIA R1, R0
+
+        AFT.w R9, 1
+        BST R1
+        BST R8
+        HIA R8, R9
+        SBR FAC
+        HST R8
+        HST R1
+        HST R0
+        DRU
+        STP
+
+FAC:
+        BST R1 | n
+        BST R2 | i
+        BST R3 | getal
+        BST R4 | resultaat
+
+        HIA R1, 1(R8)
+        HIA.w R2, 0
+        HIA.w R3, 0
+        HIA.w R4, 1
+
+        HIA.w R2, 1
+for:    VGL R2, R1
+        VSP GR, eFor
+            VER R4, R2
+        OPT.w R2, 1
+        SPR for
+eFor:   BIG R4, 2(R8)
+
+        HST R4
+        HST R3
+        HST R2
+        HST R1
+        KTG
+        EINDPR
+

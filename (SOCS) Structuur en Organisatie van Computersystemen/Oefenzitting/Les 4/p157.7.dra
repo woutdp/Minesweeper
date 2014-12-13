@@ -1,0 +1,59 @@
+MAIN:   HIA.w R0, -1
+        BST R0
+        HIA R8, R9
+        BST R0
+
+        HIA.a R2, x
+        BST R8
+        HIA R8, R9
+        SBR LEES
+        HST R8
+
+        HIA.a R2, x
+        BST R8
+        HIA R8, R9
+        SBR SCHRIJFOMGEKEERD
+        HST R8
+        STP
+
+LEES:
+        BST R0
+        BST R1 | i
+
+        HIA.w R1, 0
+forLees:VGL.w R1, 10
+        VSP GRG, forELees
+            LEZ
+            BIG R0, 0(R2+)
+        OPT.w R1, 1
+        SPR forLees
+forELees:
+
+        HST R1
+        HST R0
+        KTG
+
+SCHRIJFOMGEKEERD:
+        BST R0
+        BST R1
+        BST R3
+
+        OPT.w R2, 10
+
+        HIA.w R1, 0
+forSO:  VGL.w R1, 10
+        VSP GRG, forESO
+            HIA R0, 0(-R2)
+            NWL
+            DRU
+        OPT.w R1, 1
+        SPR forSO
+forESO:
+
+        HST R3
+        HST R1
+        HST R0
+        KTG
+
+x:      RESGR 10
+        EINDPR

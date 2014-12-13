@@ -1,0 +1,27 @@
+MAIN:   HIA.w R0, -1
+        BST R0
+        HIA R8, R9
+        BST R0
+        HIA.a R7, HEAP
+
+        HIA R1, R7
+        OPT.w R7, 1
+
+        HIA R0, 0(R1)
+        DRU
+        HIA.i R0, R1
+        DRU
+
+        HIA.i R1, 3
+
+        HIA R0, R1
+        DRU
+        HIA.i R0, R1
+        DRU
+
+        HIA R1,
+
+        STP
+
+HEAP:   RESGR 200
+        EINDPR

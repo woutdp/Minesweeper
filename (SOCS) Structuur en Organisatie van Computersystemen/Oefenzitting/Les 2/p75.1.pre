@@ -1,0 +1,39 @@
+        HIA.w R1, 0 | n
+        HIA.w R2, 0 | i
+        HIA.w R3, 0 | inpr
+
+        LEZ
+        HIA R1,R0
+BW1:    VGL R2,R1
+        VSP GRG, EW1
+            LEZ
+            BIG R0, a(R2+)
+        SPR BW1
+EW1:    HIA.w R2,0
+
+
+BW2:    VGL R2,R1
+        VSP GRG, EW2
+            LEZ
+            BIG R0, b(R2+)
+        SPR BW2
+EW2:    HIA.w R2,0
+        HIA.w R3, 0
+
+
+BW3:    VGL R2,R1
+        VSP GRG, EW3
+            HIA R4, a(R2)
+            HIA R5, b(R2+)
+            VER R4, R5
+            OPT R3, R4
+        SPR BW3
+EW3:    HIA R0, R3
+        DRU
+
+        STP
+
+A:  RESGR 20
+B:  RESGR 20
+
+        EINDPR

@@ -1,0 +1,5 @@
+*.map
+*.out
+*.pre
+*~
+*.fuse_hidden*

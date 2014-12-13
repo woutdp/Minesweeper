@@ -1,0 +1,279 @@
+<H1><center>Practicum SOCS</center></H1>
+<H3>Inleiding</H3> <P>Het doel van dit practicum is om studenten de
+mogelijkheid te bieden ervaring op te doen met iets grotere DRAMA
+programma's en om hen inzicht te laten krijgen in het verband tussen
+C-programma's en hun DRAMA-equivalent. Dit practicum is volledig
+vrijblijvend, en er worden dan ook geen punten op gezet.
+</P>
+<H3>Paswoord-beveiliging en buffer-overflow-bugs...</H3>
+ 
+<p>
+Een paswoord wordt normaal gezien nooit in zijn
+oorspronkelijke (tekstuele) vorm bewaard op de harde schijf van je
+computer. In veel besturingssystemen (UNIX-achtige systemen bvb.) wordt een 
+paswoord ge-encrypteerd met een functie waarvan de inverse zeer moeilijk (in
+principe <b>niet</b>...) te bepalen is. We tonen in dit practicum een
+zeer eenvoudige versie van een encryptie-functie (waarvan de inverse zeer
+makkelijk te bepalen is...). 
+ 
+<p>
+Paswoorden worden hier voorgesteld d.m.v. een array van integers. Een
+paswoord heeft een beperkte lengte (in dit geval is de maximale lengte
+N=6). Kortere paswoorden worden automatisch opgevuld met nullen.  De
+encryptie-functie die we zullen gebruiken gebruikt het volgende
+algoritme (i: 0..N-1): 
+ 
+<blockquote>
+Elk element i wordt vervangen door de som van dat element en het
+element dat gevonden wordt door de index te verhogen met de waarde van
+element i. Of anders gezegd: <br>
+ 
+<pre>passwd[i] = passwd[i] + passwd[(i + passwd[i]) % MAXLENGTH]</pre>
+</blockquote>
+ 
+ <H3>C-programma</H3> Hieronder geven we het volledige C-programma voor het inlezen van een paswoord, het encrypteren ervan en
+het nagaan of het ingegeven paswoord overeenkomt met een vooraf
+ingesteld paswoord. Indien de twee paswoorden overeenkomen wordt de
+gebruiker toegelaten (1111 wordt afgedrukt), anders niet (0 wordt afgedrukt).
+ 
+<PRE>
+// Code nodig om getint() en printint() te implementeren...
+#include "stdio.h"
+ 
+int getint() {
+    int result;
+    scanf("%d", &result);
+    return result;
+}
+ 
+void printint(int getal) {
+    printf("%d", getal);
+}
+ 
+void nieuweLijn() {
+    printf("\n");
+}
+ 
+// Het eigenlijke programma...
+ 
+int MAXLENGTH = 6;
+ 
+/* 'Encrypted' form of the password...
+ * Original password = 1 2 3 4 5 6
+ */
+int internalPasswd[6] = {3,6,9,10,15,12};
+ 
+/*
+ * Function encrypts a given password and checks whether it is equal
+ * to the installed password.
+ */
+int encryptAndCheck(int passwd[]){
+  int i, j;
+  int equal = 1;
+ 
+  i = 0;
+  while( i < MAXLENGTH){
+    passwd[i] = passwd[i] + passwd[(i + passwd[i]) % MAXLENGTH];
+ 
+    j = 0;
+    while (j < MAXLENGTH){
+      printint(passwd[j++]);
+    }
+    nieuweLijn();
+ 
+    i++;
+  }
+ 
+  i = 0;
+  while( (i < MAXLENGTH) && (equal == 1)){
+    if( internalPasswd[i] != passwd[i] ){
+      equal = 0;
+    }
+    i++;
+  }
+  return equal;
+}
+ 
+ 
+void main(void){
+ 
+  int passwd[6];
+  int access; 
+  int i;
+ 
+  /* initialization */
+  
+  access = 0;
+  i = 0;
+  while( i < MAXLENGTH ){
+    passwd[i++] = 0;
+  }
+ 
+  /* get input */
+  i = 0;
+  passwd[i] = getint();
+  
+  while( ( i < MAXLENGTH ) && (passwd[i] != 0) ){
+    i++;
+    passwd[i] = getint();
+  }
+ 
+  /* check passwd */
+  if ( encryptAndCheck(passwd) == 1 ){
+    access = 1;
+  }
+ 
+  if( access == 1 ){
+    /* allow user access */
+    printint(1111);
+  }else{
+    /* deny user */
+    printint(0);
+  }
+}
+ 
+</PRE>
+ 
+<H3>Opgave</H3> Er wordt gevraagd om onderstaand DRAMA-programma aan
+te vullen tot een vertaalde versie van het gegeven C-programma.
+<p>
+Voor de functie <b>moet</b> je je houden aan de opgegeven voorwaarden qua
+inhoud van accumulatoren en stapel (1(R8) bevat passwd, de terugkeerwaarde wordt in R0 teruggegeven).
+Je mag 	 <b>niets</b> aan de gegeven DRAMA code veranderen.
+<p>
+De aandachtige student zal opgemerkt hebben dat er een serieuze security-
+fout in dit programma geslopen is... De fout in kwestie is een typische
+fout in bestaande software systemen die dikwijls aan de basis ligt van een   
+Internet inbraak: de zogenaamde </em>buffer-overflow</em>. Hierbij wordt
+een onzorgvuldige test op de grenzen van een array uitgebuit door  
+de array te laten <em>overlopen</em> waardoor cruciale plaatsen in het geheugen 
+gemanipuleerd kunnen worden. Beschrijf waar de fout zit en 
+leg uit hoe je kan 'inbreken' zonder het paswoord te kennen!
+ 
+ 
+<PRE>
+|----------------------------------------------------------------------
+| Vul aan (Beschrijving van 'buffer-overflow' bug)
+|----------------------------------------------------------------------
+ 
+| access en passwd op stapel (resp -2(R8) en -8(R8))
+| i in R1
+main:		HIA.w	R0, -1
+		BST	R0
+		HIA	R8,R9
+		BST	R0
+		AFT.w	R9, 1		| -2(R8) bevat access
+		HIA.w	R0, 0
+		BIG	R0, -2(R8)	| access = 0
+		AFT.w	R9, 6		| -8(R8) tot -3(R8) bevat passwd
+		HIA.w 	R1, 0		| variabele i in main() in R1; i = 0
+		
+		HIA.w 	R0,0
+		HIA.a	R2,-8(R8)	| R2 bevat &passwd[0]
+WHILE0:		VGL 	R1, MAXLENGTH
+		VSP 	GRG,EWHILE0	| while( i < MAXLENGTH )
+		BIG	R0, 0(R2+)
+		OPT.w	R1, 1
+		SPR 	WHILE0
+ 
+EWHILE0:	HIA.w 	R1,0		| i = 0
+		LEZ
+		BIG	R0, -8(R8)	| passwd[i] = getint();		
+ 
+WHILE1:		VGL 	R1, MAXLENGTH	| while( (i < MAXLENGTH) ...
+		VSP 	GRG, EWHILE1
+		VGL.w 	R0, 0		| ... && (passwd[i] != 0))
+		VSP 	GEL, EWHILE1
+		OPT.w 	R1, 1		| i++
+		LEZ
+		HIA.a	R2,-8(R8)	
+		OPT	R2, R1		| R2 <- &passwd[i]
+		BIG 	R0, 0(R2)	| passwd[i] = getint()
+		SPR 	WHILE1
+ 
+EWHILE1:		HIA.a	R0, -8(R8)
+		BST 	R0
+		BST	R8
+		HIA 	R8, R9
+		SBR	encryptAndCheck	| encryptAndCheck(passwd)	
+		HST	R8
+		OPT.w	R9, 1
+ 
+		VGL.w 	R0, 1
+		VSP 	NGEL, EIF
+		BIG 	R0, -2(R8)	| access = 1
+		
+EIF:		HIA 	R0, -2(R8)
+		VGL.w 	R0, 1		| if (access == 1)
+		VSP 	NGEL, ACCESSDENIED
+		HIA.w 	R0, 1111
+		DRU
+		SPR ENDPROGRAM
+ 
+ACCESSDENIED:	HIA.w 	R0, 0000
+		DRU
+ 
+		SPR 	ENDPROGRAM
+ 
+ 
+ 
+ 
+encryptAndCheck: 	| passwd in 1(R8)  (stapel)
+			| i in R1
+			| j in R2
+			| equal in R3
+			| R0 = result
+			| Enkel accumulator R0 gewijzigd
+|------------------------------------------------------------------------------------------------------------------------------------------
+| vul aan
+|------------------------------------------------------------------------------------------------------------------------------------------
+WHILE4:		VGL 	R2, MAXLENGTH
+		VSP 	GRG, EWHILE4	| while( j < MAXLENGTH )
+		HIA 	R0, R2
+		OPT 	R0, 1(R8) 
+		HIA 	R0, 0(R0)
+		DRU			| printint(passwd[j]
+		OPT.w 	R2,1
+		SPR 	WHILE4
+EWHILE4: 		NWL
+		OPT.w 	R1, 1		| i++
+|------------------------------------------------------------------------------------------------------------------------------------------
+| vul aan
+|------------------------------------------------------------------------------------------------------------------------------------------
+		KTG		| return to main
+|
+ENDPROGRAM:	STP
+|
+MAXLENGTH:	6
+INTERNALPASSWD:	3
+		6
+		9
+		10
+		15
+		12
+		EINDPR
+</PRE>
+ 
+<H3>Praktische opmerkingen:</H3>
+<ul>
+<li> Aan het bestaande DRAMA programma mag <b>niets</b> gewijzigd
+worden. Laat ook de commentaarlijnen staan zodat de
+toegevoegde code duidelijk zichtbaar is.  
+ 
+<li> Het resultaat van de functie wordt in R0 teruggegeven. De parameter 
+(passwd) zit in R3, het terugkeer adres van de functie zit in R2.  
+<li>Het gedeeltelijke DRAMA programma vind je ook in het bestand "PracticumOpgave.dra".
+<li>Het ingestelde paswoord is 1 2 3 4 5 6. Je geeft een nul (<b>0</b>) 
+om de lijn af te sluiten.
+<li> Schrijf <b>uitvoerig</b> commentaar bij je programma. Geef ook duidelijk aan 
+welke C-variabelen corresponderen met welke Drama-accumulatoren.
+</ul>
+ 
+<p>Succes!<BR>
+Prof. B. De Decker<br>
+Kristof Verslype<br>
+Kristof Geebelen<br>
+Willem De Groef<br>
+</p>
+</BODY>
+</HTML>

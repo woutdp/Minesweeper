@@ -1,0 +1,50 @@
+MAIN:   HIA.w R0, -1
+        BST R0
+        HIA R8, R9
+        BST R0
+
+        LEZ
+        HIA R1, R0
+
+        AFT.w R9, 1
+        BST R1
+        BST R8
+        HIA R8, R9
+        SBR FAC
+        HST R8
+        HST R1
+        HST R0
+        DRU
+        STP
+
+FAC:
+        BST R1
+        BST R2
+        BST R3
+        HIA R1, 1(R8) | n
+        VGL.w R1, 1
+        VSP NGEL, FACELSE
+            HIA.w R2, 1
+            BIG R2, 2(R8)
+        HST R3
+        HST R2
+        HST R1
+        KTG
+FACELSE:
+        HIA R3, R1
+        AFT.w R3, 1
+        AFT.w R9, 1
+        BST R3
+        BST R8
+        HIA R8, R9
+        SBR FAC
+        HST R8
+        HST R3
+        HST R2
+        VER R1, R2
+        BIG R1, 2(R8)
+        HST R3
+        HST R2
+        HST R1
+        KTG
+        EINDPR

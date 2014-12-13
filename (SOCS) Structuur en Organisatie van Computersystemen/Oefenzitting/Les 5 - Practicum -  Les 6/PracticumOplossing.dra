@@ -1,0 +1,141 @@
+|----------------------------------------------------------------------
+| Vul aan (Beschrijving van 'buffer-overflow' bug)
+|----------------------------------------------------------------------
+
+| access en passwd op stapel (resp -2(R8) en -8(R8))
+| i in R1
+main:		HIA.w	R0, -1
+		BST	R0
+		HIA	R8,R9
+		BST	R0
+		AFT.w	R9, 1		| -2(R8) <- access
+		HIA.w	R0, 0
+		BIG	R0, -2(R8)	| access = 0
+		AFT.w	R9, 6		| -8(R8) tot -3(R8) <- passwd
+		HIA.w 	R1, 0		| variabele i in main() in R1; i = 0
+
+		HIA.w 	R0,0
+		HIA.a	R2,-8(R8)	| R2 <- &passwd[0]
+WHILE0:		VGL 	R1, MAXLENGTH
+		VSP 	GRG,EWHILE0 | while( i < MAXLENGTH )
+		BIG	R0, 0(R2+)
+		OPT.w	R1, 1
+		SPR 	WHILE0
+
+EWHILE0:	HIA.w 	R1,0		| i = 0
+		LEZ
+		BIG	R0, -8(R8)	| passwd[i] = getint();
+
+WHILE1:		VGL 	R1, MAXLENGTH | while( (i < MAXLENGTH) ...
+		VSP 	GRG, EWHILE1
+		VGL.w 	R0, 0		| ... && (passwd[i] != 0))
+		VSP 	GEL, EWHILE1
+		OPT.w 	R1, 1		| i++
+		LEZ
+		HIA.a	R2,-8(R8)
+		OPT	R2, R1		| R2 <- &passwd[i]
+		BIG 	R0, 0(R2)	| passwd[i] = getint()
+		SPR 	WHILE1
+
+EWHILE1:		HIA.a	R0, -8(R8)
+		BST 	R0
+		BST	R8
+		HIA 	R8, R9
+		SBR	encryptAndCheck | encryptAndCheck(passwd)
+		HST	R8
+		OPT.w	R9, 1
+
+		VGL.w 	R0, 1
+		VSP 	NGEL, EIF
+		BIG 	R0, -2(R8)	| access = 1
+
+EIF:		HIA 	R0, -2(R8)
+		VGL.w 	R0, 1		| if (access == 1)
+		VSP 	NGEL, ACCESSDENIED
+		HIA.w 	R0, 1111
+		DRU
+		SPR ENDPROGRAM
+
+ACCESSDENIED:	HIA.w 	R0, 0000
+		DRU
+
+		SPR 	ENDPROGRAM
+
+
+
+
+encryptAndCheck: 	| passwd in 1(R8)  (stapel)
+			| i in R1
+			| j in R2
+			| equal in R3
+			| R0 = result
+			| Enkel accumulator R0 gewijzigd
+|------------------------------------------------------------------------------------------------------------------------------------------
+| vul aan
+		BST R4
+		HIA.w 	R3, 1
+		HIA.w 	R1, 0
+WHILE2:		VGL		R1, MAXLENGTH
+		VSP 	GRG, EWHILE2
+		HIA 	R0, R1
+		OPT 	R0, 1(R8)
+		HIA 	R0, 0(R0)
+
+		OPT.w 	R0, R1
+		MOD		R0, MAXLENGTH
+
+		OPT 	R0, 1(R8)
+		HIA 	R0, 0(R0)
+
+		HIA 	R4, R1
+		OPT 	R4, 1(R8)
+		OPT		R0, 0(R4)
+
+		BIG 	R0, 0(R4)
+
+		HIA.w 	R2, 0
+|------------------------------------------------------------------------------------------------------------------------------------------
+WHILE4:		VGL 	R2, MAXLENGTH
+		VSP 	GRG, EWHILE4 | while( j < MAXLENGTH )
+		HIA 	R0, R2
+		OPT 	R0, 1(R8)
+		HIA 	R0, 0(R0)
+		DRU			| printint(passwd[j]
+		OPT.w 	R2,1
+		SPR 	WHILE4
+EWHILE4: 		NWL
+		OPT.w 	R1, 1		| i++
+|------------------------------------------------------------------------------------------------------------------------------------------
+| vul aan
+		SPR WHILE2
+EWHILE2:	HIA.w R1, 0
+
+WHILE3:		VGL 	R1,	MAXLENGTH
+		VSP		GRG, EWHILE3
+		VGL.w		R3, 1
+		VSP		NGEL, EWHILE3
+			HIA		R0, R1
+			OPT		R0, 1(R8)
+			HIA		R0, 0(R0)
+			VGL		R0, INTERNALPASSWD(R1)
+			VSP		GEL, EIF2
+				HIA.w 	R3, 0
+
+EIF2:	OPT.w 	R1, 1
+		SPR 	WHILE3
+EWHILE3:
+		HIA		R0, R3
+		HST R4
+|------------------------------------------------------------------------------------------------------------------------------------------
+		KTG		| return to main
+|
+ENDPROGRAM:	STP
+|
+MAXLENGTH:	6
+INTERNALPASSWD:	3
+		6
+		9
+		10
+		15
+		12
+		EINDPR

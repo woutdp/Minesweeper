@@ -1,0 +1,4 @@
+HIA.w   R1, 2(R3)
+BIG.i   R1, 2(R3)
+SPR     R1, 2(R3)
+OPT     R1, 2(R3)

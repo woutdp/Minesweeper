@@ -1,0 +1,68 @@
+main:   HIA.w R0, -1
+        BST R0
+        HIA R8, R9
+        BST R0
+
+        LEZ
+        HIA R1, R0 | a
+        LEZ
+        HIA R2, R0 | b
+
+        AFT.w R9, 1
+        BST R2
+        BST R1
+        BST R8
+        HIA R8, R9
+        SBR ggd
+        HST R8
+        HST R1
+        HST R2
+        HST R0
+        DRU
+        STP
+
+ggd:    BST R1
+        BST R2
+        BST R3
+
+        HIA R1, 1(R8) | a
+        HIA R2, 2(R8) | b
+
+        VGL R1, R2
+        VSP NGEL, ggdElse
+            BIG R1, 3(R8)
+            SPR ggdEnd
+ggdElse: VGL R1, R2
+        VSP GRG, ggdElse2
+            AFT.w R9, 1
+            BST R1
+            BST R2
+            BST R8
+            HIA R8, R9
+            SBR ggd
+            HST R8
+            HST R2
+            HST R1
+            HST R0
+            BIG R0, 3(R8)
+            SPR ggdEnd
+
+ggdElse2:   AFT.w R9, 1
+            AFT R1, R2
+            BST R2
+            BST R1
+            BST R8
+            HIA R8, R9
+            SBR ggd
+            HST R8
+            HST R1
+            HST R2
+            HST R0
+            BIG R0, 3(R8)
+            SPR ggdEnd
+
+ggdEnd: HST R3
+        HST R2
+        HST R1
+        KTG
+        EINDPR
