@@ -115,8 +115,7 @@ Tile.prototype.Render = function(ctx){
 
 Tile.prototype.MouseUp = function(event){
     var rect = this.GetCollisionRect();
-    var clickedCoordinates = getClickedCoordinates(event);
-    if (collides(rect, clickedCoordinates.x, clickedCoordinates.y)){
+    if (collides(rect,event.offsetX,event.offsetY)){
         if (event.button === 0){
             this.parent.ShowTile(this);
         }
