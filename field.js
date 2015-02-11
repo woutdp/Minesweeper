@@ -1,6 +1,5 @@
 'use strict'
 var Field = function(fieldX, fieldY, tileWidth, tileHeight, tileSpace, difficulty, borderW, borderH){
-    //console.log('field created');
     //===================================
     // VARIABLES
     //===================================
@@ -34,13 +33,6 @@ Field.prototype.Update = function(dt){
 }
 
 Field.prototype.Render = function(ctx){
-    //Fill in the background with a rounded rectangle
-    //roundRect(ctx,0,0,this.GetWidth(),this.GetHeight(), 20, true, false);
-    //roundRect(ctx,0,0,this.GetWidth(),this.GetHeight(),4, true, false);
-    //ctx.fillStyle = "#444549";
-    //var extraB = 0;
-    //ctx.fillRect(this.borderw-extraB,this.borderh-extraB,this.GetWidth()-this.borderw*2+extraB*2,this.GetHeight()-this.borderh*2+extraB*2+5);
-
     for (var i = 0, l = this.fieldX; i < l; i++) {
         for (var j = 0, l2 = this.fieldY; j < l2; j++) {
             this.tile[i][j].Render(ctx);

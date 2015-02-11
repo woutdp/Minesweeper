@@ -20,7 +20,7 @@ function collides(rect, x, y){
 function getClickedCoordinates(event){
     var x = new Number();
     var y = new Number();
-    var canvas = document.getElementById("canvas");
+    var canvas = document.getElementById("game");
 
     if (event.x != undefined && event.y != undefined){
       x = event.x;
