@@ -16,6 +16,7 @@ var Tile = function(x, y, w, h, nx, ny, parent){
     this.ow     = w; //Original width
     this.oh     = h; //Original height
     this.color  = tileColors["HiddenNormal"];
+    this.backgroundColor  = '#444549';
     this.bomb   = false;
     this.state  = tileState.type.HIDDEN;
     this.mouseState  = tileMouseState.type.NONE;
@@ -23,6 +24,7 @@ var Tile = function(x, y, w, h, nx, ny, parent){
     this.text   = "";
     this.parent = parent;
     this.mouseDown = false;
+    this.tileInvalid = true;   // component requires redrawing ?
 
     //Animationstuff
     this.animation = "hold";
@@ -35,7 +37,7 @@ var Tile = function(x, y, w, h, nx, ny, parent){
     this.conditionalfunction = function(){};
 
     //Font color stuff
-    this.defaultfontcolor = {r:222,g:222,b:222};
+    this.defaultfontcolor = {r:182,g:182,b:182};
     this.fontcolor = this.defaultfontcolor;
     this.startcolor = "";
     this.endcolor = "";
@@ -51,19 +53,65 @@ Tile.prototype.Update = function(dt){
 }
 
 Tile.prototype.Render = function(ctx){
-    //console.log("Render")
-    //Draw the rectangle
+    if(this.tileInvalid === false) return;
+
+    var s = parseInt(1);
+    var d = 2;
+    var u = 1;
+    var x = parseInt(this.x);
+    var y = parseInt(this.y);
+    var w = parseInt(this.w);
+    var h = parseInt(this.h);
+    var extraDown = 0;
+    var extraDownBackground = 0;
+    var scale = Math.min(this.w,this.h)/this.ow;
+
+    if (this.ny+1 === this.parent.GetFieldY()){
+        extraDown = 5*scale;
+        extraDownBackground = 5;
+    }
+
+    if (this.state === tileState.type.SHOWN)
+        d = 1;
+
+    this.SetFillStyle(ctx, this.backgroundColor);
+    ctx.fillRect(this.ox, this.oy, this.ow, this.oh+extraDownBackground);
+
+    //Sides
+    this.SetFillStyle(ctx, ColorLuminance(this.color, -0.1));
+    ctx.fillRect(x, y, w, h+extraDown);
+
+    //Upper
+    this.SetFillStyle(ctx, ColorLuminance(this.color, 0.1));
+    ctx.fillRect(x, y, w, u);
+
+    //Inner
     this.SetFillStyle(ctx, this.color);
-    ctx.fillRect(this.x, this.y, this.w, this.h);
+    var height = h-u;
+    var width = w-(s*2);
+    if (height < 0) height = 0;
+    if (width < 0) width = 0;
+    ctx.fillRect(x+s, y+u, width, height);
+
+    //Downer
+    if (extraDown > 1)
+        this.SetFillStyle(ctx, ColorLuminance(this.color, -0.26));
+    else
+        this.SetFillStyle(ctx, ColorLuminance(this.color, -0.2));
+    var test = Math.abs(h-d);
+    ctx.fillRect(x, y+test, w, d+extraDown);
 
     //Draw the text
-    var fontSize = Math.min(this.w,this.h);
-    this.SetFont(ctx, fontSize + "px Arial");
-    ctx.textAlign="center";
-    this.SetFillStyle(ctx,"rgb(" + this.fontcolor.r + "," + this.fontcolor.g + "," + this.fontcolor.b + ")");
-    ctx.fillText(this.text,(this.x+(10*(this.w/this.ow))),this.y+(19*(this.h/this.oh)));
-}
+    if (this.text != ""){
+        var fontSize = Math.min(this.w-2,this.h-2);
+        this.SetFont(ctx, fontSize + "px Arial");
+        ctx.textAlign="center";
+        this.SetFillStyle(ctx,"rgb(" + this.fontcolor.r + "," + this.fontcolor.g + "," + this.fontcolor.b + ")");
+        ctx.fillText(this.text,(this.x+(12*(this.w/this.ow))),this.y+(21*(this.h/this.oh)));
+    }
 
+    this.tileInvalid = false;
+}
 
 Tile.prototype.MouseUp = function(event){
     var rect = this.GetCollisionRect();
@@ -109,32 +157,23 @@ Tile.prototype.MouseDown = function(event){
 Tile.prototype.CorrectSquareColors = function(){
     var s = tileState.type;
     this.text = "";
-    switch(this.state) {
-        case s.SHOWN:
-            if (this.bomb){
-                this.SetColor(tileColors["ShownBomb"]);
-                this.text = "";
-            }
-            else{
-                //not a bomb
-                this.SetColor(tileColors["ShownNormal"]);
-                if (this.surrounding != 0)
-                    this.text = "" + this.surrounding;
-            }
-            break;
-        case s.HIDDEN:
-                this.SetColor(tileColors["HiddenNormal"]);
-            break;
-        case s.FLAGGED:
-            this.SetColor(tileColors["FlaggedNormal"]);
-            break;
-        default:
-        alert("A tile is not in a valid state")
+
+    //Adjust colors for SHOWN states
+    if (this.state === s.SHOWN){
+        if (this.bomb){
+            this.SetColor(tileColors["ShownBomb"]);
+            this.text = "";
+        }
+        else{
+            //not a bomb
+            this.SetColor(tileColors["ShownNormal"]);
+            if (this.surrounding != 0)
+                this.text = "" + this.surrounding;
+        }
     }
 
     //Adjust colors for Hidden states
     if (this.state === s.HIDDEN){
-        // if the mouse is hovering over the tile
         if (this.mouseState === tileMouseState.type.NONE){
             this.SetColor(tileColors["HiddenNormal"]);
         }
@@ -143,7 +182,6 @@ Tile.prototype.CorrectSquareColors = function(){
             this.SetColor(tileColors["HiddenHover"]);
         }
 
-        // if the mouse is selecting (clicking on the tile) over the tile
         if(this.mouseState === tileMouseState.type.SELECTED){
             this.SetColor(tileColors["HiddenSelectedLeftclick"]);
         }
@@ -155,7 +193,6 @@ Tile.prototype.CorrectSquareColors = function(){
 
     //Adjust colors for flagged states
     if (this.state === s.FLAGGED){
-        // if the mouse is hovering over the tile
         if (this.mouseState === tileMouseState.type.NONE){
             this.SetColor(tileColors["FlaggedNormal"]);
         }
@@ -200,7 +237,7 @@ Tile.prototype.ColorFontUpdate = function(dt){
             var b = parseInt(Interpolate(this.fontFramePercentage,this.startcolor.b,this.endcolor.b));
             this.fontcolor = {r:r,g:g,b:b};
         }
-        Invalidate();
+        this.TileInvalidate();
     }
 }
 
@@ -233,17 +270,16 @@ Tile.prototype.Animate = function(animation, delay, animTime, endFunction, condi
         case "popinpopupsin":
             break;
         default:
-        alert("Unknown animation")
+            alert("Unknown animation");
     }
 }
 
 Tile.prototype.AnimationUpdate = function(dt){
-    //Animations
     if (this.animdelay > 0) this.animdelay -= dt;
     this.framePercentage = this.animcounter/this.animtime;
 
     if (this.animdelay <= 0)
-        if (this.animation != "hold" && this.framePercentage > 1){
+        if (this.animation != "hold" && this.framePercentage >= 1){
             this.endfunction();
             this.ResetDimensions();
             this.Animate("hold");
@@ -259,42 +295,42 @@ Tile.prototype.AnimationUpdate = function(dt){
                     this.x = this.ox + (this.ow - this.w)/2
                     this.y = this.oy + (this.oh - this.h)/2
                     this.animcounter += dt;
-                    Invalidate();
+                    this.TileInvalidate();
                     break;
                 case "popinpopup":
                     this.w = this.ow * Math.abs((this.framePercentage*2 - 1));
                     this.h = this.oh * Math.abs((this.framePercentage*2 - 1));
-                    this.x = this.ox + (this.ow - this.w)/2
-                    this.y = this.oy + (this.oh - this.h)/2
+                    this.x = Math.round(this.ox + (this.ow - this.w)/2);
+                    this.y = Math.round(this.oy + (this.oh - this.h)/2);
                     this.animcounter += dt;
-                    Invalidate();
+                    this.TileInvalidate();
                     break;
                 case "popinpopuphor":
                     this.w = this.ow * Math.abs((this.framePercentage*2 - 1));
                     //this.h = this.oh * Math.abs((this.framePercentage*2 - 1));
-                    this.x = this.ox + (this.ow - this.w)/2
-                    this.y = this.oy + (this.oh - this.h)/2
+                    this.x = this.ox + (this.ow - this.w)/2;
+                    this.y = this.oy + (this.oh - this.h)/2;
                     this.animcounter += dt;
-                    Invalidate();
+                    this.TileInvalidate();
                     break;
                 case "popinpopupver":
                     //this.w = this.ow * Math.abs((this.framePercentage*2 - 1));
                     this.h = this.oh * Math.abs((this.framePercentage*2 - 1));
-                    this.x = this.ox + (this.ow - this.w)/2
-                    this.y = this.oy + (this.oh - this.h)/2
+                    this.x = this.ox + (this.ow - this.w)/2;
+                    this.y = this.oy + (this.oh - this.h)/2;
                     this.animcounter += dt;
-                    Invalidate();
+                    this.TileInvalidate();
                     break;
                 case "popinpopupsin":
                     this.w = this.ow * Math.sin(Math.PI*Math.abs((this.framePercentage*2 - 1))/2);
                     this.h = this.oh * Math.sin(Math.PI*Math.abs((this.framePercentage*2 - 1))/2);
-                    this.x = this.ox + (this.ow - this.w)/2
-                    this.y = this.oy + (this.oh - this.h)/2
+                    this.x = this.ox + (this.ow - this.w)/2;
+                    this.y = this.oy + (this.oh - this.h)/2;
                     this.animcounter += dt;
-                    Invalidate();
+                    this.TileInvalidate();
                     break;
                 default:
-                alert("Unknown animation")
+                    alert("Unknown animation");
             }
         }
 }
@@ -304,6 +340,7 @@ Tile.prototype.Reset = function(){
     this.SetState(tileState.type.HIDDEN);
     this.isbeingrevealed = false;
     this.fontcolor = this.defaultfontcolor;
+    this.TileInvalidate();
 }
 
 Tile.prototype.ResetDimensions = function(){
@@ -311,11 +348,11 @@ Tile.prototype.ResetDimensions = function(){
     this.y = this.oy;
     this.w = this.ow;
     this.h = this.oh;
-    Invalidate();
+    this.TileInvalidate();
 }
 
 Tile.prototype.GetCollisionRect = function(){
-    return {x: this.ox, y: this.oy, w: this.ow, h: this.oh}
+    return {x: this.ox+1, y: this.oy+1, w: this.ow-2, h: this.oh-2}
 }
 
 Tile.prototype.GetAnimtime = function(){
@@ -335,7 +372,7 @@ Tile.prototype.SetFont = function(ctx, font){
 Tile.prototype.SetColor = function(color){
     if (this.color != color){
         this.color = color;
-        Invalidate();
+        this.TileInvalidate();
     }
 }
 
@@ -356,7 +393,7 @@ Tile.prototype.SetBomb = function(val){
 Tile.prototype.SetState = function(state){
     if (state != this.state){
         this.state = state;
-        this.parent.CheckColorFont();
+        this.parent.CheckColorFont(this);
         this.CorrectSquareColors();
     }
 }
@@ -386,6 +423,11 @@ Tile.prototype.GetNX = function(){
 
 Tile.prototype.GetNY = function(){
     return this.ny;
+}
+
+Tile.prototype.TileInvalidate = function(){
+    this.tileInvalid = true;   // call this whenever the component state changes
+    Invalidate();
 }
 
 //ANIMIDEAS
