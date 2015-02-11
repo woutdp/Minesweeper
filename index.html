@@ -1,1 +1,40 @@
-it worked
+<!DOCTYPE html>
+<html>
+<head>
+<title>Minesweeper</title>
+<link href="stylesheet.css" rel="stylesheet" type="text/css">
+<?php
+  header('Content-Type: text/javascript; charset=UTF-8');
+?>
+</head>
+<body>
+    <div id="container">
+        <div id="buttonContainer">
+            <button type="button" id="resetButton">NEW GAME</button>
+        </div>
+        <div id="gameContainer">
+            <canvas id="game"> Canvas element not supported </canvas>
+            <div id="gameMenu">
+                <p>Resizing will reset the game</p>
+                <button type="button" class="subButton" id="resizeButtonSmall">Small</button>
+                <button type="button" class="subButton" id="resizeButtonNormal">Normal</button>
+                <button type="button" class="subButton" id="resizeButtonBig">Big</button>
+                <button type="button" class="subButton" id="resizeButtonHuge">Huge</button>
+                <button type="button" id="resumeGame">Resume Game</button>
+            </div>
+            <script src="global.js"></script>
+            <script src="tile.js"></script>
+            <script src="field.js"></script>
+            <script src="FPSMeter.js"></script>
+            <script src="game.js"></script>
+            <script src="application.js"></script>
+            <script type="text/javascript">
+                var c = document.getElementById("game");
+                var gameContainer = document.getElementById("gameContainer");</script>
+            </div>
+            <div id="siteLink">
+            <a href="../index.html">Made by Wout De Puysseleir</a></div>
+        </div>
+    </div>
+</body>
+</html>
