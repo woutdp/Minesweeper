@@ -115,7 +115,8 @@ Tile.prototype.Render = function(ctx){
 
 Tile.prototype.MouseUp = function(event){
     var rect = this.GetCollisionRect();
-    if (collides(rect,event.offsetX,event.offsetY)){
+    var clickedCoordinates = getClickedCoordinates(event);
+    if (collides(rect, clickedCoordinates.x, clickedCoordinates.y)){
         if (event.button === 0){
             this.parent.ShowTile(this);
         }
@@ -132,7 +133,8 @@ Tile.prototype.MouseUp = function(event){
 
 Tile.prototype.MouseOver = function(event){
     var rect = this.GetCollisionRect();
-    if (collides(rect,event.offsetX,event.offsetY)){
+    var clickedCoordinates = getClickedCoordinates(event);
+    if (collides(rect,clickedCoordinates.x,clickedCoordinates.y)){
         if (this.mouseState != tileMouseState.type.SELECTED
         &&  this.mouseState != tileMouseState.type.RIGHTSELECTED){
             this.SetMouseState(tileMouseState.type.HOVER);
@@ -144,7 +146,8 @@ Tile.prototype.MouseOver = function(event){
 
 Tile.prototype.MouseDown = function(event){
     var rect = this.GetCollisionRect();
-    if (collides(rect,event.offsetX,event.offsetY)){
+    var clickedCoordinates = getClickedCoordinates(event);
+    if (collides(rect,clickedCoordinates.x,clickedCoordinates.y)){
         if (event.button === 0)
             this.SetMouseState(tileMouseState.type.SELECTED);
         if (event.button === 2)

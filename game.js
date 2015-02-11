@@ -9,16 +9,9 @@ var Game = {
             render  = options.render,
             step    = 1/fps; // time passed in each frame in seconds
 
-        var fpsmeter = new FPSMeter({decimals: 0,
-                                    graph: true,
-                                    theme: 'dark',
-                                    });
         // Gameloop function
         function Frame() {
             // This should always be called at the beginning of Frame
-            fpsmeter.hide();
-            fpsmeter.tickStart();
-
             now = Timestamp();
             dt = dt + Math.min(1, (now - last) / 1000);
             while(dt > step) {
@@ -27,8 +20,6 @@ var Game = {
             }
             render();
             last = now;
-
-            fpsmeter.tick();
 
             requestAnimationFrame(Frame);
         }
